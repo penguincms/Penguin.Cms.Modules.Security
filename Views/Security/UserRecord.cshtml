@@ -1,0 +1,9 @@
+﻿@using Penguin.Cms.Security;
+
+@model User
+
+@{
+
+}
+
+<span>@($"{(!string.IsNullOrWhiteSpace(Model.Login) ? Model.Login : Model.Guid.ToString())}")</span>

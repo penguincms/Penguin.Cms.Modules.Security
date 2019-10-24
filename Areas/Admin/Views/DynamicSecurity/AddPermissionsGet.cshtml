@@ -1,0 +1,25 @@
+﻿@model AddPermisionsPageModel
+
+@using Penguin.Reflection.Serialization.Objects;
+@using Penguin.Reflection.Serialization.Abstractions.Interfaces;
+
+@{
+    Layout = "_Layout";
+    IMetaObject displayModel = new MetaObject(Model);
+    displayModel.Hydrate();
+}
+
+@section LeftPane {
+    <partial name="~/Areas/Admin/Views/Dynamic/LeftPane.cshtml" model="string.Empty" />
+}
+
+<h3>
+    Adding Permissions to @Model.Guids.Count objects
+</h3>
+
+<div>
+
+    <partial name="Edit" model="displayModel" />
+
+    <button type="button" onclick="Meta.Submit('/Admin/DynamicSecurity/AddPermissionsPost');">Add Permissions</button>
+</div>

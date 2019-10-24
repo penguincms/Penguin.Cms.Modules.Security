@@ -1,0 +1,52 @@
+﻿@model LoginPageModel
+@{
+	ViewBag.Title = "Log In";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+	Html.IncludeJS("Security/Fingerprint");
+}
+
+<div id="Login" class="tiny SFmodal verticleCenter">
+    <div class="container">
+        @using (Html.BeginForm("Login", "User", new { area = "" }))
+		{
+        @Html.HiddenFor(m => m.ReturnUrl)
+
+        <div class="errors SFmodalOption">
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="formRowSingle SFmodalOption">
+            <div class="data">
+                @Html.TextBoxFor(m => m.Login, new { @placeholder = "Login", @autocomplete = "off" })
+            </div>
+        </div>
+        <div class="formRowSingle SFmodalOption">
+            <div class="data">
+                @Html.TextBoxFor(m => m.Password, new { @placeholder = "Password", @type = "Password" })
+            </div>
+        </div>
+        <div class="formRowSingle SFmodalOption">
+            <button class="waitButton">
+                Submit
+            </button>
+        </div>
+
+			@if (!ConfigurationService.GetBool(ConfigurationNames.DOMAIN_LOGIN))
+			{
+				if (ConfigurationService.GetBool(ConfigurationNames.MANUAL_USER_REGISTRATION))
+				{
+
+                    <div class="formRowSingle SFmodalOption">
+                        <div class="data">
+                            <a class="noninvasive" href="/User/Register">Register</a>
+                        </div>
+                    </div>
+				}
+        <div class="formRowSingle SFmodalOption">
+            <div class="data">
+                <a class="noninvasive" href="/User/LoginHelp">Help</a>
+            </div>
+        </div>
+			}
+		}
+    </div>
+</div>
