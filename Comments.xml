@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Penguin.Cms.Modules.Security.Local</name>
+        <name>Penguin.Cms.Modules.Security</name>
     </assembly>
     <members>
         <member name="T:Penguin.Cms.Modules.Security.Attributes.RequireSecurityAttribute">
