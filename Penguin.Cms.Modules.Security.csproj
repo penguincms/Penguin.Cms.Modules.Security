@@ -10,12 +10,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="1.0.0-T9LXGUJ" />
-    <PackageReference Include="Penguin.Authentication.OWA" Version="1.0.2-T9LXGUJ" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="3.4.0-T9LXGUJ" />
-    <PackageReference Include="Penguin.Cms.Web.Security" Version="3.1.0-T9LXGUJ" />
-    <PackageReference Include="Penguin.Security" Version="1.1.7-T9LXGUJ" />
-    <PackageReference Include="Penguin.Web.Configuration" Version="1.0.0-T9LXGUJ" />
+    <PackageReference Include="Penguin.Authentication.OWA" Version="1.0.3-T9M1HHH" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="3.4.1-T9M1HHH" />
+    <PackageReference Include="Penguin.Cms.Web.Security" Version="3.1.1-T9M1HHH" />
+    <PackageReference Include="Penguin.Security" Version="1.1.8-T9M1HHH" />
+    <PackageReference Include="Penguin.Web.Configuration" Version="1.0.1-T9M1HHH" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="1.0.1-T9M1K2Y" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
