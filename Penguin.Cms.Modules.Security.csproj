@@ -9,6 +9,7 @@
     <Description>Not Available</Description>
     <AssemblyName>Penguin.Cms.Modules.Security</AssemblyName>
     <RootNamespace>Penguin.Cms.Modules.Security</RootNamespace>
+    <DocumentationFile>Penguin.Cms.Modules.Security.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
