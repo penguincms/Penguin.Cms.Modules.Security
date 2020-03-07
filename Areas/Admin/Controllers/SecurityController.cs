@@ -10,7 +10,6 @@ using Penguin.Persistence.Abstractions.Interfaces;
 using Penguin.Reflection.Serialization.Abstractions.Interfaces;
 using Penguin.Reflection.Serialization.Abstractions.Wrappers;
 using Penguin.Reflection.Serialization.Extensions;
-using Penguin.Security.Abstractions.Attributes;
 using Penguin.Security.Abstractions.Constants;
 using Penguin.Web.Security.Attributes;
 using System;
@@ -32,7 +31,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            IRepository<SecurityGroup> securityGroupRepository = ServiceProvider.GetService<IRepository<SecurityGroup>>();
+            IRepository<SecurityGroup> securityGroupRepository = this.ServiceProvider.GetService<IRepository<SecurityGroup>>();
             List<SecurityGroup> ToDisplay = new List<SecurityGroup>();
 
             foreach (IMetaObject o in model.CollectionItems)

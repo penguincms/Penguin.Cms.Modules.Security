@@ -1,6 +1,6 @@
 ﻿using Penguin.Cms.Entities;
+using Penguin.Cms.Repositories.Interfaces;
 using Penguin.Cms.Security;
-using Penguin.Cms.Security.Extensions;
 using Penguin.Cms.Security.Constants;
 using Penguin.Cms.Security.Repositories;
 using Penguin.DependencyInjection.Abstractions.Interfaces;
@@ -13,8 +13,6 @@ using Penguin.Security.Abstractions.Interfaces;
 using Penguin.Security.Abstractions.Providers;
 using System;
 using System.Collections.Generic;
-using Penguin.Cms.Web.Security;
-using Penguin.Cms.Repositories.Interfaces;
 
 namespace Penguin.Cms.Modules.Security.SecurityProviders
 {
@@ -28,16 +26,16 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
 
         public PermissionableEntitySecurityProvider(IUserSession userSession, IEntityRepository<SecurityGroup> securityGroupRepository, EntityPermissionsRepository entityPermissionsRepository, IRepository<Role> roleRepository, UserRepository userRepository)
         {
-            EntityPermissionsRepository = entityPermissionsRepository;
-            UserSession = userSession;
-            RoleRepository = roleRepository;
-            UserRepository = userRepository;
-            SecurityGroupRepository = securityGroupRepository;
+            this.EntityPermissionsRepository = entityPermissionsRepository;
+            this.UserSession = userSession;
+            this.RoleRepository = roleRepository;
+            this.UserRepository = userRepository;
+            this.SecurityGroupRepository = securityGroupRepository;
         }
 
         public void AcceptMessage(IUpdating<Entity> update)
         {
-            if (EntityPermissionsRepository.GetForEntity(update.Target) is null)
+            if (this.EntityPermissionsRepository.GetForEntity(update.Target) is null)
             {
                 this.SetDefaultPermissions(update.Target);
             }
@@ -45,12 +43,12 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
 
         public void AddPermissions(Entity entity, PermissionTypes permissionTypes, ISecurityGroup source = null)
         {
-            EntityPermissionsRepository.AddPermission(entity, SecurityGroupRepository.Find(source?.Guid ?? UserSession.LoggedInUser.Guid), permissionTypes);
+            this.EntityPermissionsRepository.AddPermission(entity, this.SecurityGroupRepository.Find(source?.Guid ?? this.UserSession.LoggedInUser.Guid), permissionTypes);
         }
 
         public void AddPermissions(Entity entity, PermissionTypes permissionTypes, Guid source)
         {
-            this.AddPermissions(entity, permissionTypes, SecurityGroupRepository.Find(source));
+            this.AddPermissions(entity, permissionTypes, this.SecurityGroupRepository.Find(source));
         }
 
         public bool CheckAccess(Entity entity, PermissionTypes permissionTypes = PermissionTypes.Read)
@@ -60,13 +58,13 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
                 return false;
             }
 
-            return new ObjectSecurityProvider(UserSession).CheckAccess(entity) ||
-             EntityPermissionsRepository.AllowsAccessType(entity, this.UserSession.LoggedInUser, permissionTypes);
+            return new ObjectSecurityProvider(this.UserSession).CheckAccess(entity) ||
+             this.EntityPermissionsRepository.AllowsAccessType(entity, this.UserSession.LoggedInUser, permissionTypes);
         }
 
         public void ClonePermissions(Entity source, Entity destination)
         {
-            foreach (SecurityGroupPermission sg in EntityPermissionsRepository.GetForEntity(source).Permissions)
+            foreach (SecurityGroupPermission sg in this.EntityPermissionsRepository.GetForEntity(source).Permissions)
             {
                 this.AddPermissions(destination, sg.Type, sg.SecurityGroup);
             }
@@ -84,7 +82,7 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
             {
                 yield return new SecurityGroupPermission()
                 {
-                    SecurityGroup = UserRepository.Find(this.UserSession.LoggedInUser.ExternalId),
+                    SecurityGroup = this.UserRepository.Find(this.UserSession.LoggedInUser.ExternalId),
                     Type = PermissionTypes.Full
                 };
             }
@@ -94,27 +92,27 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
         {
             foreach (Entity entity in o)
             {
-                foreach (SecurityGroupPermission sg in GetDefaultPermissions())
+                foreach (SecurityGroupPermission sg in this.GetDefaultPermissions())
                 {
                     if (sg.SecurityGroup is null)
                     {
                         continue;
                     }
 
-                    EntityPermissionsRepository.AddPermission(entity, sg.SecurityGroup, sg.Type);
+                    this.EntityPermissionsRepository.AddPermission(entity, sg.SecurityGroup, sg.Type);
                 }
             }
         }
 
         public void SetLoggedIn(Entity entity)
         {
-            EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
+            this.EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
         }
 
         public void SetPublic(Entity entity)
         {
-            EntityPermissionsRepository.AddPermission(entity, Roles.Guest, PermissionTypes.Read);
-            EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
+            this.EntityPermissionsRepository.AddPermission(entity, Roles.Guest, PermissionTypes.Read);
+            this.EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
         }
     }
 }

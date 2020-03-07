@@ -27,6 +27,9 @@ namespace Penguin.Cms.Modules.Security.Controllers
     [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public partial class UserController : Controller
     {
+        [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
+        public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
+
         protected IProvideConfigurations ConfigurationService { get; set; }
         protected EmailValidationRepository EmailValidationRepository { get; set; }
         protected MessageBus? MessageBus { get; set; }
@@ -34,22 +37,19 @@ namespace Penguin.Cms.Modules.Security.Controllers
         protected UserService UserService { get; set; }
         protected UserSession UserSession { get; set; }
 
-        [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
-        public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
-
         public UserController(IProvideConfigurations configurationService, UserSession userSession, UserRepository userRepository, UserService userService, EmailValidationRepository emailValidationRepository, MessageBus? messageBus = null)
         {
-            UserRepository = userRepository;
-            EmailValidationRepository = emailValidationRepository;
-            UserService = userService;
-            ConfigurationService = configurationService;
-            MessageBus = messageBus;
-            UserSession = userSession;
+            this.UserRepository = userRepository;
+            this.EmailValidationRepository = emailValidationRepository;
+            this.UserService = userService;
+            this.ConfigurationService = configurationService;
+            this.MessageBus = messageBus;
+            this.UserSession = userSession;
         }
 
         public ActionResult Authenticate(Guid UserId, Guid Token, string ReturnUrl)
         {
-            User? user = UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
+            User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
             if (user == null)
             {
@@ -57,11 +57,11 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
             else if (!string.IsNullOrWhiteSpace(ReturnUrl))
             {
-                return Redirect(ReturnUrl);
+                return this.Redirect(ReturnUrl);
             }
             else
             {
-                return Redirect("/");
+                return this.Redirect("/");
             }
         }
 
@@ -89,9 +89,9 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 return this.View(model);
             }
 
-            using (IWriteContext context = UserRepository.WriteContext())
+            using (IWriteContext context = this.UserRepository.WriteContext())
             {
-                User toUpdate = UserRepository.Find(UserSession.LoggedInUser._Id);
+                User toUpdate = this.UserRepository.Find(this.UserSession.LoggedInUser._Id);
 
                 toUpdate.Password = model.NewPassword;
             }
@@ -99,7 +99,10 @@ namespace Penguin.Cms.Modules.Security.Controllers
             return this.View("ChangePasswordSuccess");
         }
 
-        public ActionResult EmailValidationRequired(string Id) => this.View((object)Id);
+        public ActionResult EmailValidationRequired(string Id)
+        {
+            return this.View((object)Id);
+        }
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
@@ -112,7 +115,10 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
-        public ActionResult ForgotLogin() => this.View();
+        public ActionResult ForgotLogin()
+        {
+            return this.View();
+        }
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
@@ -125,7 +131,10 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
-        public ActionResult ForgotPassword() => this.View();
+        public ActionResult ForgotPassword()
+        {
+            return this.View();
+        }
 
         public ActionResult GenerateEmailValidation(string Id)
         {
@@ -141,14 +150,14 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [HandleException(typeof(NotLoggedInException))]
         public ActionResult Login(string? Url = null)
         {
-            if (UserRepository.Count() == 0)
+            if (!this.UserRepository.Any())
             {
-                if (MessageBus is null)
+                if (this.MessageBus is null)
                 {
                     throw new NullReferenceException("Can not send security group setup message to null messagebus");
                 }
 
-                MessageBus.Send(new Setup<SecurityGroup>());
+                this.MessageBus.Send(new Setup<SecurityGroup>());
             }
 
             Url ??= this.Request.Headers["Referer"].ToString() ?? "";
@@ -182,12 +191,12 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
 
             StaticLogger.Log($"{model.Login}: Calling user service...", StaticLogger.LoggingLevel.Call);
-            User? user = UserService.Login(model.Login, model.Password);
+            User? user = this.UserService.Login(model.Login, model.Password);
 
             if (user != null)
             {
                 StaticLogger.Log($"{model.Login}: User not null", StaticLogger.LoggingLevel.Call);
-                if (ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION))
+                if (this.ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION))
                 {
                     if (!this.EmailValidationRepository.IsValidated(user))
                     {
@@ -205,7 +214,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 {
                     WaitForRedirect();
                     StaticLogger.Log($"{model.Login}: Returning Home", StaticLogger.LoggingLevel.Call);
-                    return Redirect("/Home/Index");
+                    return this.Redirect("/Home/Index");
                 }
             }
             else
@@ -217,7 +226,10 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
         }
 
-        public IActionResult LoginHelp() => this.View();
+        public IActionResult LoginHelp()
+        {
+            return this.View();
+        }
 
         [LoggedIn]
         public ActionResult LogOut()
@@ -260,13 +272,13 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 return this.View(model);
             }
 
-            if (!ConfigurationService.GetBool(ConfigurationNames.ALLOW_DUPLICATE_EMAIL) && this.UserRepository.GetByEmail(model.Email) != null)
+            if (!this.ConfigurationService.GetBool(ConfigurationNames.ALLOW_DUPLICATE_EMAIL) && this.UserRepository.GetByEmail(model.Email) != null)
             {
                 this.ModelState.AddModelError(string.Empty, "Email is already taken");
                 return this.View(model);
             }
 
-            bool EmailValidationRequired = ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION);
+            bool EmailValidationRequired = this.ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION);
             User newUser;
 
             using (IWriteContext context = this.UserRepository.WriteContext())
@@ -314,7 +326,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ResetPassword(Guid UserId, Guid Token)
         {
-            User? user = UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
+            User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
             if (user == null)
             {
@@ -322,7 +334,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
             else
             {
-                return Redirect("ChangePassword");
+                return this.Redirect("ChangePassword");
             }
         }
 
@@ -341,6 +353,9 @@ namespace Penguin.Cms.Modules.Security.Controllers
             return this.View();
         }
 
-        private string GetEmailValidationLink() => $"{new Uri(this.Request.Path).Scheme}://{new Uri(this.Request.Path).Authority}{this.Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
+        private string GetEmailValidationLink()
+        {
+            return $"{new Uri(this.Request.Path).Scheme}://{new Uri(this.Request.Path).Authority}{this.Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
+        }
     }
 }

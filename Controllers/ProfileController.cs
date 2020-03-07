@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Penguin.Cms.Security;
-using Penguin.Cms.Security.Repositories;
 using Penguin.Cms.Security.Extensions;
+using Penguin.Cms.Security.Repositories;
+using Penguin.Cms.Web.Security;
 using Penguin.Persistence.Abstractions.Interfaces;
-using Penguin.Web.Security;
 using Penguin.Web.Security.Attributes;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Penguin.Cms.Web.Security;
 
 namespace Penguin.Cms.Modules.Security.Controllers
 {
@@ -22,9 +21,9 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         public ProfileController(IRepository<UserProfile> profileRepository, UserRepository userRepository, UserSession userSession)
         {
-            ProfileRepository = profileRepository;
-            UserRepository = userRepository;
-            UserSession = userSession;
+            this.ProfileRepository = profileRepository;
+            this.UserRepository = userRepository;
+            this.UserSession = userSession;
         }
 
         [LoggedIn]
@@ -50,7 +49,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            using (IWriteContext context = ProfileRepository.WriteContext())
+            using (IWriteContext context = this.ProfileRepository.WriteContext())
             {
                 UserProfile existing = this.ProfileRepository.GetByLogin(this.UserSession.LoggedInUser.Login);
 

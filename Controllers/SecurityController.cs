@@ -27,30 +27,30 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         public SecurityController(ISession session, IRepository<Group> groupRepository, IRepository<Role> roleRepository, IHostingEnvironment hostingEnvironment, UserRepository userRepository, IUserSession userSession)
         {
-            Session = session;
-            UserSession = userSession;
-            UserRepository = userRepository;
-            GroupRepository = groupRepository;
-            RoleRepository = roleRepository;
-            HostingEnvironment = hostingEnvironment;
+            this.Session = session;
+            this.UserSession = userSession;
+            this.UserRepository = userRepository;
+            this.GroupRepository = groupRepository;
+            this.RoleRepository = roleRepository;
+            this.HostingEnvironment = hostingEnvironment;
         }
 
         public ActionResult Fingerprint([FromBody] string content)
         {
-            TeaEncryptor tea = new TeaEncryptor(Session.Get(SecurityService.SecurityTokenPasswordName));
+            TeaEncryptor tea = new TeaEncryptor(this.Session.Get(SecurityService.SecurityTokenPasswordName));
 
             string json = tea.Decrypt(content);
 
             SecurityToken token = JsonConvert.DeserializeObject<SecurityToken>(json);
 
-            Session.Set(SecurityService.SecurityTokenName, token);
+            this.Session.Set(SecurityService.SecurityTokenName, token);
 
-            return Content("");
+            return this.Content("");
         }
 
         public FileContentResult Image()
         {
-            string FilePath = HostingEnvironment.ContentRootPath + SecurityService.ImageRoot + "Security.png";
+            string FilePath = this.HostingEnvironment.ContentRootPath + SecurityService.ImageRoot + "Security.png";
             byte[] toReturn;
             byte[] password = new byte[SecurityService.PasswordLength];
             Random r = new Random();
@@ -71,12 +71,11 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 {
                     toReturn[SecurityService.DummyFileLength + i] = password[i];
                 }
-            } 
+            }
 
+            this.Session.Set(SecurityService.SecurityTokenPasswordName, password);
 
-            Session.Set(SecurityService.SecurityTokenPasswordName, password);
-
-            return File(toReturn, "image/png", System.IO.Path.GetFileName(SecurityService.SecurityImage));
+            return this.File(toReturn, "image/png", System.IO.Path.GetFileName(SecurityService.SecurityImage));
         }
 
         public ActionResult UserRecord(Guid Model)

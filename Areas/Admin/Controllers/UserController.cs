@@ -24,8 +24,8 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
         public UserController(UserService userService, UserRepository userRepository, IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            UserRepository = userRepository;
-            UserService = userService;
+            this.UserRepository = userRepository;
+            this.UserService = userService;
         }
 
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
@@ -33,7 +33,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
         {
             AuthenticationToken Token = this.UserService.RequestPasswordReset(login);
 
-            return View(Token);
+            return this.View(Token);
         }
 
         [DynamicPropertyHandler(DisplayContexts.Edit, typeof(User), nameof(Penguin.Cms.Security.User.Password))]
@@ -44,7 +44,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return this.View(model.GetParent().FromDatabase<User>(ServiceProvider));
+            return this.View(model.GetParent().FromDatabase<User>(this.ServiceProvider));
         }
     }
 }

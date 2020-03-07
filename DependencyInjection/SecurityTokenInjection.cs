@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Penguin.Cms.Modules.Security.Entities;
 using Penguin.Cms.Modules.Security.Services;
-using Penguin.DependencyInjection.Abstractions.Enums;
 using Penguin.DependencyInjection.Abstractions.Interfaces;
 using Penguin.Security.Encryption;
-using Microsoft.Extensions.DependencyInjection;
-using ServiceLifetime = Penguin.DependencyInjection.Abstractions.Enums.ServiceLifetime;
 using System;
+using ServiceLifetime = Penguin.DependencyInjection.Abstractions.Enums.ServiceLifetime;
 
 namespace Penguin.Cms.Modules.Security.DependencyInjection
 {

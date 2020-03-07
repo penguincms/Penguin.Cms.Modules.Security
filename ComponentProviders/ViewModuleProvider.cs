@@ -17,20 +17,20 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
 
         public ViewModuleProvider(EntityPermissionsRepository entityPermissionsRepository, PermissionableEntitySecurityProvider permissionableEntitySecurityProvider)
         {
-            PermissionableEntitySecurityProvider = permissionableEntitySecurityProvider;
-            EntityPermissionsRepository = entityPermissionsRepository;
+            this.PermissionableEntitySecurityProvider = permissionableEntitySecurityProvider;
+            this.EntityPermissionsRepository = entityPermissionsRepository;
         }
 
         public IEnumerable<ViewModule> GetComponents(Entity Id)
         {
-            EntityPermissions permissions = EntityPermissionsRepository.GetForEntity(Id);
+            EntityPermissions permissions = this.EntityPermissionsRepository.GetForEntity(Id);
 
             if (permissions is null)
             {
                 permissions = new EntityPermissions()
                 {
                     EntityGuid = Id.Guid,
-                    Permissions = PermissionableEntitySecurityProvider.GetDefaultPermissions().ToList()
+                    Permissions = this.PermissionableEntitySecurityProvider.GetDefaultPermissions().ToList()
                 };
             }
 

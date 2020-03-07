@@ -23,7 +23,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
         public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, messageBus)
         {
-            EntityPermissionsRepository = entityPermissionsRepository;
+            this.EntityPermissionsRepository = entityPermissionsRepository;
         }
 
         [HttpPost]
@@ -40,13 +40,13 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            IRepository<SecurityGroup> securityGroupRepository = ServiceProvider.GetService<IRepository<SecurityGroup>>();
+            IRepository<SecurityGroup> securityGroupRepository = this.ServiceProvider.GetService<IRepository<SecurityGroup>>();
 
             foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
             {
                 Type repositoryType = typeof(IEntityRepository<>).MakeGenericType(t);
 
-                IEntityRepository permissionableEntityRepository = (IEntityRepository)ServiceProvider.GetService(repositoryType);
+                IEntityRepository permissionableEntityRepository = (IEntityRepository)this.ServiceProvider.GetService(repositoryType);
 
                 using IWriteContext context = permissionableEntityRepository.WriteContext();
 
@@ -63,7 +63,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
                     foreach (SecurityGroup group in Groups)
                     {
-                        EntityPermissionsRepository.AddPermission(target, group, model.TypeToAdd);
+                        this.EntityPermissionsRepository.AddPermission(target, group, model.TypeToAdd);
                     }
                 }
             }

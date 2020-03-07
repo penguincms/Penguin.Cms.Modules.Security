@@ -2,16 +2,14 @@
 using Penguin.Cms.Modules.Security.SecurityProviders;
 using Penguin.DependencyInjection.Abstractions.Enums;
 using Penguin.DependencyInjection.Abstractions.Interfaces;
-using Penguin.DependencyInjection.ServiceProviders;
 using Penguin.Reflection;
 using Penguin.Security.Abstractions.Interfaces;
 using System;
-using DependencyEngine = Penguin.DependencyInjection.Engine;
 
 namespace Penguin.Cms.Modules.Security.DependencyInjection
 {
     public class SecurityProviderInjection : IRegisterDependencies
-    { 
+    {
         public void RegisterDependencies(IServiceRegister serviceRegister)
         {
             foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
@@ -23,6 +21,5 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
 
             serviceRegister.Register(typeof(ISecurityProvider<Entity>), typeof(PermissionableEntitySecurityProvider), ServiceLifetime.Scoped);
         }
-
     }
 }

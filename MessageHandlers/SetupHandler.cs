@@ -1,21 +1,21 @@
 ﻿using Penguin.Cms.Core.Services;
 using Penguin.Cms.Entities;
+using Penguin.Cms.Modules.Security.SecurityProviders;
 using Penguin.Cms.Repositories.Interfaces;
 using Penguin.Cms.Security;
 using Penguin.Cms.Security.Constants;
+using Penguin.Cms.Security.Extensions;
 using Penguin.Cms.Security.Repositories;
 using Penguin.Messaging.Abstractions.Interfaces;
 using Penguin.Messaging.Application.Messages;
 using Penguin.Persistence.Abstractions.Interfaces;
 using Penguin.Reflection;
+using Penguin.Security.Abstractions.Constants;
 using Penguin.Security.Abstractions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Penguin.Cms.Security.Extensions;
-using Penguin.Cms.Modules.Security.SecurityProviders;
-using Penguin.Security.Abstractions.Constants;
 
 namespace Penguin.Cms.Modules.Security.MessageHandlers
 {
@@ -30,60 +30,60 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 
         public SetupHandler(IRepository<SecurityGroup> securityGroupRepository, PermissionableEntitySecurityProvider securityProvider, ComponentService componentService, IEntityRepository<Group> groupRepository, UserRepository userRepository, IEntityRepository<Role> roleRepository)
         {
-            SecurityGroupRepository = securityGroupRepository;
-            ComponentService = componentService;
-            GroupRepository = groupRepository;
-            RoleRepository = roleRepository;
-            UserRepository = userRepository;
-            SecurityProvider = securityProvider;
+            this.SecurityGroupRepository = securityGroupRepository;
+            this.ComponentService = componentService;
+            this.GroupRepository = groupRepository;
+            this.RoleRepository = roleRepository;
+            this.UserRepository = userRepository;
+            this.SecurityProvider = securityProvider;
         }
 
         public void AcceptMessage(Setup<SecurityGroup> message)
         {
-            using (IWriteContext context = RoleRepository.WriteContext())
+            using (IWriteContext context = this.RoleRepository.WriteContext())
             {
-                RoleRepository.CreateIfNotExists(RoleNames.SysAdmin, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
+                this.RoleRepository.CreateIfNotExists(RoleNames.SysAdmin, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
             }
 
-            using (IWriteContext context = RoleRepository.WriteContext())
+            using (IWriteContext context = this.RoleRepository.WriteContext())
             {
-                foreach (Role u in GatherSecurity<Role, IRole>(typeof(Roles)))
+                foreach (Role u in this.GatherSecurity<Role, IRole>(typeof(Roles)))
                 {
-                    if (RoleRepository.Find(u.ExternalId) is null)
+                    if (this.RoleRepository.Find(u.ExternalId) is null)
                     {
-                        RoleRepository.Add(u);
+                        this.RoleRepository.Add(u);
                     }
                 }
 
                 foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
                 {
-                    RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
+                    this.RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
                 }
             }
 
-            using (IWriteContext context = GroupRepository.WriteContext())
+            using (IWriteContext context = this.GroupRepository.WriteContext())
             {
-                foreach (Group g in GatherSecurity<Group, IGroup>(typeof(Groups)))
+                foreach (Group g in this.GatherSecurity<Group, IGroup>(typeof(Groups)))
                 {
-                    if (GroupRepository.Find(g.ExternalId) is null)
+                    if (this.GroupRepository.Find(g.ExternalId) is null)
                     {
-                        RefreshRoles(g);
+                        this.RefreshRoles(g);
 
-                        GroupRepository.AddOrUpdate(g);
+                        this.GroupRepository.AddOrUpdate(g);
                     }
                 }
             }
 
-            using (IWriteContext context = UserRepository.WriteContext())
+            using (IWriteContext context = this.UserRepository.WriteContext())
             {
-                foreach (User u in GatherSecurity<User, IUser>(typeof(Users)))
+                foreach (User u in this.GatherSecurity<User, IUser>(typeof(Users)))
                 {
-                    if (UserRepository.Find(u.ExternalId) is null)
+                    if (this.UserRepository.Find(u.ExternalId) is null)
                     {
-                        RefreshRoles(u);
-                        RefreshGroups(u);
+                        this.RefreshRoles(u);
+                        this.RefreshGroups(u);
 
-                        UserRepository.AddOrUpdate(u);
+                        this.UserRepository.AddOrUpdate(u);
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
                 }
             }
 
-            foreach (TInterface sec in ComponentService.GetComponents<TInterface>())
+            foreach (TInterface sec in this.ComponentService.GetComponents<TInterface>())
             {
                 if (sec is TSecurityGroup s)
                 {
@@ -161,7 +161,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             foreach (Group g in target.Groups.ToList())
             {
-                if (GroupRepository.Find(g) is Group ng)
+                if (this.GroupRepository.Find(g) is Group ng)
                 {
                     (target.Groups as IList<Group>)?.Remove(g);
 
@@ -174,7 +174,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             foreach (Role r in target.Roles.ToList())
             {
-                if (RoleRepository.Find(r) is Role nr)
+                if (this.RoleRepository.Find(r) is Role nr)
                 {
                     (target.Roles as IList<Role>)?.Remove(r);
 
