@@ -42,7 +42,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             using (IWriteContext context = this.RoleRepository.WriteContext())
             {
-                this.RoleRepository.CreateIfNotExists(RoleNames.SysAdmin, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
+                this.RoleRepository.CreateIfNotExists(RoleNames.SYS_ADMIN, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
             }
 
             using (IWriteContext context = this.RoleRepository.WriteContext())

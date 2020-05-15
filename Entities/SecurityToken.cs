@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Penguin.Cms.Modules.Security.Entities
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public partial class Connection
     {
         [JsonProperty("rtt")]
@@ -205,4 +207,6 @@ namespace Penguin.Cms.Modules.Security.Entities
     public partial class StyleMedia
     {
     }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

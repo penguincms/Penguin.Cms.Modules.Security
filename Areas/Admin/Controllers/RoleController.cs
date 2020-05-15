@@ -6,7 +6,7 @@ using System;
 
 namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 {
-    [RequiresRole(RoleNames.UserManager)]
+    [RequiresRole(RoleNames.USER_MANAGER)]
     public class RoleController : ObjectManagementController<Role>
     {
         public RoleController(IServiceProvider serviceProvider) : base(serviceProvider)

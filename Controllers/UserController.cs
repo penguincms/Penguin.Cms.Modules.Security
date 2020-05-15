@@ -27,8 +27,11 @@ namespace Penguin.Cms.Modules.Security.Controllers
     [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public partial class UserController : Controller
     {
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
         public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
         protected IProvideConfigurations ConfigurationService { get; set; }
         protected EmailValidationRepository EmailValidationRepository { get; set; }

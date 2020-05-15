@@ -25,7 +25,7 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
 
                 ISession session = context.Session;
 
-                TeaEncryptor tea = new TeaEncryptor(session.Get(SecurityService.SecurityTokenPasswordName));
+                TeaEncryptor tea = new TeaEncryptor(session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
 
                 string fingerPrintJson = tea.Decrypt(context.Request.Cookies["X-Session"]);
 

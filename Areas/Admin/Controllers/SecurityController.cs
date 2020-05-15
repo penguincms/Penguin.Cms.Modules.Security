@@ -23,7 +23,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
         {
         }
 
-        [RequiresRole(RoleNames.UserManager)]
+        [RequiresRole(RoleNames.USER_MANAGER)]
         public ActionResult SecurityGroupPermissionSelector(IMetaObject model)
         {
             if (model is null)
@@ -51,7 +51,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
             return this.View("InputList", pageModel);
         }
 
-        [RequiresRole(RoleNames.UserManager)]
+        [RequiresRole(RoleNames.USER_MANAGER)]
         [DynamicHandler(DisplayContexts.Edit, typeof(List<Group>), typeof(List<Role>))]
         public ActionResult SecurityGroupSelector(IMetaObject model)
         {

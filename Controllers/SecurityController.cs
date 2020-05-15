@@ -37,22 +37,22 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         public ActionResult Fingerprint([FromBody] string content)
         {
-            TeaEncryptor tea = new TeaEncryptor(this.Session.Get(SecurityService.SecurityTokenPasswordName));
+            TeaEncryptor tea = new TeaEncryptor(this.Session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
 
             string json = tea.Decrypt(content);
 
             SecurityToken token = JsonConvert.DeserializeObject<SecurityToken>(json);
 
-            this.Session.Set(SecurityService.SecurityTokenName, token);
+            this.Session.Set(SecurityService.SECURITY_TOKEN_NAME, token);
 
             return this.Content("");
         }
 
         public FileContentResult Image()
         {
-            string FilePath = this.HostingEnvironment.ContentRootPath + SecurityService.ImageRoot + "Security.png";
+            string FilePath = this.HostingEnvironment.ContentRootPath + SecurityService.IMAGE_ROOT + "Security.png";
             byte[] toReturn;
-            byte[] password = new byte[SecurityService.PasswordLength];
+            byte[] password = new byte[SecurityService.PASSWORD_LENGTH];
             Random r = new Random();
 
             r.NextBytes(password);
@@ -63,17 +63,17 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
             else
             {
-                toReturn = new byte[SecurityService.DummyFileLength + SecurityService.PasswordLength];
+                toReturn = new byte[SecurityService.DUMMY_FILE_LENGTH + SecurityService.PASSWORD_LENGTH];
 
                 r.NextBytes(toReturn);
 
-                for (int i = 0; i < SecurityService.PasswordLength; i++)
+                for (int i = 0; i < SecurityService.PASSWORD_LENGTH; i++)
                 {
-                    toReturn[SecurityService.DummyFileLength + i] = password[i];
+                    toReturn[SecurityService.DUMMY_FILE_LENGTH + i] = password[i];
                 }
             }
 
-            this.Session.Set(SecurityService.SecurityTokenPasswordName, password);
+            this.Session.Set(SecurityService.SECURITY_TOKEN_PASSWORD_NAME, password);
 
             return this.File(toReturn, "image/png", System.IO.Path.GetFileName(SecurityService.SecurityImage));
         }

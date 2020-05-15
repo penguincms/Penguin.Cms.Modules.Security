@@ -15,5 +15,15 @@
             </summary>
             <param name="filterContext">The filter context to execture against</param>
         </member>
+        <member name="P:Penguin.Cms.Modules.Security.Services.SecurityService.SecurityImage">
+            <summary>
+            The file path for the generated security image
+            </summary>
+        </member>
+        <member name="P:Penguin.Cms.Modules.Security.Services.SecurityService.SecurityImageTesting">
+            <summary>
+            The file path for the generated security image when in debug
+            </summary>
+        </member>
     </members>
 </doc>

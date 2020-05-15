@@ -74,7 +74,7 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
         {
             yield return new SecurityGroupPermission()
             {
-                SecurityGroup = this.RoleRepository.Find(RoleNames.SysAdmin),
+                SecurityGroup = this.RoleRepository.Find(RoleNames.SYS_ADMIN),
                 Type = PermissionTypes.Full
             };
 

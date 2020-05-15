@@ -15,7 +15,7 @@ using System;
 
 namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 {
-    [RequiresRole(RoleNames.UserManager)]
+    [RequiresRole(RoleNames.USER_MANAGER)]
     public class UserController : ObjectManagementController<User>
     {
         protected UserRepository UserRepository { get; set; }
