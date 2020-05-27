@@ -9,6 +9,7 @@ using Penguin.Cms.Web.Extensions;
 using Penguin.Persistence.Abstractions.Attributes.Control;
 using Penguin.Reflection.Serialization.Abstractions.Interfaces;
 using Penguin.Security.Abstractions.Constants;
+using Penguin.Security.Abstractions.Interfaces;
 using Penguin.Web.Configuration.Attributes;
 using Penguin.Web.Security.Attributes;
 using System;
@@ -22,7 +23,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
         protected UserService UserService { get; set; }
 
-        public UserController(UserService userService, UserRepository userRepository, IServiceProvider serviceProvider) : base(serviceProvider)
+        public UserController(UserService userService, UserRepository userRepository, IServiceProvider serviceProvider, IUserSession userSession) : base(serviceProvider, userSession)
         {
             this.UserRepository = userRepository;
             this.UserService = userService;

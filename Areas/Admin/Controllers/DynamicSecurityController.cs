@@ -10,6 +10,7 @@ using Penguin.Cms.Security;
 using Penguin.Cms.Security.Repositories;
 using Penguin.Persistence.Abstractions.Interfaces;
 using Penguin.Reflection;
+using Penguin.Security.Abstractions.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
     {
         protected EntityPermissionsRepository EntityPermissionsRepository { get; set; }
 
-        public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, messageBus)
+        public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, IUserSession userSession, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, userSession, messageBus)
         {
             this.EntityPermissionsRepository = entityPermissionsRepository;
         }

@@ -11,6 +11,7 @@ using Penguin.Reflection.Serialization.Abstractions.Interfaces;
 using Penguin.Reflection.Serialization.Abstractions.Wrappers;
 using Penguin.Reflection.Serialization.Extensions;
 using Penguin.Security.Abstractions.Constants;
+using Penguin.Security.Abstractions.Interfaces;
 using Penguin.Web.Security.Attributes;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 {
     public class SecurityController : AdminController
     {
-        public SecurityController(IServiceProvider serviceProvider) : base(serviceProvider)
+        public SecurityController(IServiceProvider serviceProvider, IUserSession userSession) : base(serviceProvider, userSession)
         {
         }
 

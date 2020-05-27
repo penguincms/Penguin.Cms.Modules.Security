@@ -4,6 +4,8 @@ using Penguin.Cms.Modules.Security.SecurityProviders;
 using Penguin.Cms.Security;
 using Penguin.Cms.Security.Repositories;
 using Penguin.Cms.Web.Modules;
+using Penguin.Reflection.Serialization.Abstractions.Interfaces;
+using Penguin.Reflection.Serialization.Abstractions.Wrappers;
 using Penguin.Reflection.Serialization.Objects;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +36,7 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                 };
             }
 
-            MetaObject m = new MetaObject(permissions);
-
-            m.Hydrate();
+            IMetaObject m = new MetaObjectHolder(permissions);
 
             yield return new ViewModule("~/Areas/Admin/Views/Shared/ComponentEditor.cshtml", m, "Permissions");
         }
