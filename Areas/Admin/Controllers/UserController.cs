@@ -45,7 +45,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return this.View(model.GetParent().FromDatabase<User>(this.ServiceProvider));
+            return this.View(model.Parent.FromDatabase<User>(this.ServiceProvider));
         }
     }
 }
