@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <PackageProjectUrl>https://github.com/penguincms/Penguin.Cms.Modules.Security</PackageProjectUrl>
-    <Version>1.0.0</Version>
+    <Version>5.0.0</Version>
     <Description>Not Available</Description>
     <AssemblyName>Penguin.Cms.Modules.Security</AssemblyName>
     <RootNamespace>Penguin.Cms.Modules.Security</RootNamespace>
@@ -14,12 +14,12 @@
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
-    <PackageReference Include="Penguin.Authentication.OWA" Version="1.0.3-T9XYC7H" />
-    <PackageReference Include="Penguin.Security" Version="1.1.8-T9XYC7H" />
-    <PackageReference Include="Penguin.Web.Configuration" Version="1.0.1-T9XYC7H" />
-    <PackageReference Include="Penguin.Cms.Web.Security" Version="3.1.1-T9XYC7H" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="3.4.1-T9XYC7H" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="1.0.1-T9XYC7H" />
+    <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.0" />
+    <PackageReference Include="Penguin.Security" Version="5.0.0" />
+    <PackageReference Include="Penguin.Web.Configuration" Version="5.0.0" />
+    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.0" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.0" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
