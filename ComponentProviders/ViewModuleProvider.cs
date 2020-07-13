@@ -25,6 +25,11 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
 
         public IEnumerable<ViewModule> GetComponents(Entity Id)
         {
+            if (Id is null)
+            {
+                throw new System.ArgumentNullException(nameof(Id));
+            }
+
             EntityPermissions permissions = this.EntityPermissionsRepository.GetForEntity(Id);
 
             if (permissions is null)

@@ -35,6 +35,11 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
 
         public void AcceptMessage(IUpdating<Entity> update)
         {
+            if (update is null)
+            {
+                throw new ArgumentNullException(nameof(update));
+            }
+
             if (this.EntityPermissionsRepository.GetForEntity(update.Target) is null)
             {
                 this.SetDefaultPermissions(update.Target);

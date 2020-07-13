@@ -9,6 +9,11 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
     {
         public void RegisterDependencies(IServiceRegister serviceRegister)
         {
+            if (serviceRegister is null)
+            {
+                throw new System.ArgumentNullException(nameof(serviceRegister));
+            }
+
             serviceRegister.Register(typeof(IUserSession), typeof(UserSession), ServiceLifetime.Scoped);
             serviceRegister.Register(typeof(UserSession), typeof(UserSession), ServiceLifetime.Scoped);
         }

@@ -14,6 +14,11 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
     {
         public void RegisterDependencies(IServiceRegister serviceRegister)
         {
+            if (serviceRegister is null)
+            {
+                throw new ArgumentNullException(nameof(serviceRegister));
+            }
+
             serviceRegister.Register((IServiceProvider ServiceProvider) =>
             {
                 CookieOptions option = new CookieOptions

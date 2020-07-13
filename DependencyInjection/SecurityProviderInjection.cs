@@ -12,6 +12,11 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
     {
         public void RegisterDependencies(IServiceRegister serviceRegister)
         {
+            if (serviceRegister is null)
+            {
+                throw new ArgumentNullException(nameof(serviceRegister));
+            }
+
             foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
             {
                 Type genericProviderType = typeof(ISecurityProvider<>).MakeGenericType(t);
