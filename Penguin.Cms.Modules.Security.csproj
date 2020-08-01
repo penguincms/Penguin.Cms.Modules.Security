@@ -14,12 +14,12 @@
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
-    <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.1-T9ZCSSJ" />
-    <PackageReference Include="Penguin.Security" Version="5.0.1-T9ZCSSJ" />
-    <PackageReference Include="Penguin.Web.Configuration" Version="5.0.1-T9ZCSSJ" />
-    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.1-T9ZCSSJ" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.1-T9ZCSSJ" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.1-T9ZCSSJ" />
+    <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.1-T9ZTQVZ" />
+    <PackageReference Include="Penguin.Security" Version="5.0.1-T9ZTQVZ" />
+    <PackageReference Include="Penguin.Web.Configuration" Version="5.0.1-T9ZTQVZ" />
+    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.1-T9ZTQVZ" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.1-T9ZTQVZ" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.1-T9ZTQVZ" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
