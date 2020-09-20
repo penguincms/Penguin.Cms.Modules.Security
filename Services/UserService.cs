@@ -24,14 +24,6 @@ namespace Penguin.Cms.Modules.Security.Services
     [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public class UserService : Penguin.Cms.Security.Services.UserService
     {
-        protected IProvideConfigurations ConfigurationService { get; set; }
-
-        protected MessageBus? MessageBus { get; set; }
-
-        protected IRepository<Role> RoleRepository { get; set; }
-
-        protected UserSession UserSession { get; set; }
-
         private class LoginModel
         {
             public string Domain { get; set; }
@@ -92,6 +84,14 @@ namespace Penguin.Cms.Modules.Security.Services
             public bool Succeeded { get; set; }
             public bool Try { get; set; }
         }
+
+        protected IProvideConfigurations ConfigurationService { get; set; }
+
+        protected MessageBus? MessageBus { get; set; }
+
+        protected IRepository<Role> RoleRepository { get; set; }
+
+        protected UserSession UserSession { get; set; }
 
         public UserService(UserSession userSession, UserRepository userRepository, IRepository<Role> roleRepository, IProvideConfigurations configurationService, IRepository<AuthenticationToken> authenticationTokenRepository, ISendTemplates emailTemplateRepository = null, MessageBus? messageBus = null) : base(userRepository, emailTemplateRepository, authenticationTokenRepository)
         {
@@ -226,6 +226,34 @@ namespace Penguin.Cms.Modules.Security.Services
             }
 
             return toReturn;
+        }
+
+        public User? Login(string Login, string Password, out AuthenticationToken? token, int expirationMinutes)
+        {
+            User? targetUser = this.Login(Login, Password);
+
+            if (targetUser != null)
+            {
+                Guid Token = Guid.NewGuid();
+
+                using (this.AuthenticationTokenRepository.WriteContext())
+                {
+                    token = new AuthenticationToken()
+                    {
+                        Expiration = DateTime.Now.AddMinutes(expirationMinutes),
+                        User = this.UserRepository.Find(targetUser._Id).Guid,
+                        Guid = Token
+                    };
+
+                    this.AuthenticationTokenRepository.AddOrUpdate(token);
+                }
+            }
+            else
+            {
+                token = null;
+            }
+
+            return targetUser;
         }
 
         private static void DomainLogin(LoginModel loginModel)
