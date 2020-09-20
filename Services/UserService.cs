@@ -9,6 +9,7 @@ using Penguin.Configuration.Abstractions.Extensions;
 using Penguin.Configuration.Abstractions.Interfaces;
 using Penguin.Debugging;
 using Penguin.Email.Templating.Abstractions.Interfaces;
+using Penguin.Extensions.Strings.Security;
 using Penguin.Messaging.Core;
 using Penguin.Persistence.Abstractions.Interfaces;
 using System;
@@ -450,7 +451,10 @@ namespace Penguin.Cms.Modules.Security.Services
         private void LocalLogin(LoginModel loginModel)
         {
             loginModel.LocalValidation.Attempted = true;
-            loginModel.LocalValidation.Succeeded = this.UserRepository.Where(u => u.Login == loginModel.Login && u.Password == loginModel.Password) != null;
+
+            string HashedPassword = loginModel.Password.ComputeSha512Hash();
+
+            loginModel.LocalValidation.Succeeded = this.UserRepository.Any(u => u.ExternalId == loginModel.Login && u.HashedPassword == HashedPassword);
         }
 
         private void UpdateRoles(LoginModel loginModel)

@@ -17,9 +17,9 @@
     <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.1-TA2OIRX" />
     <PackageReference Include="Penguin.Security" Version="5.0.1-TA2OIRX" />
     <PackageReference Include="Penguin.Web.Configuration" Version="5.0.1-TA2OIRX" />
-    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.1-TA2OIRX" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.1-TA2OIRX" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.1-TA2OIRX" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.1-TA2UU2Y" />
+    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.1-TA2UZ02" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.1-TA2UZ02" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
