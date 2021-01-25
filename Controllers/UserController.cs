@@ -24,7 +24,6 @@ using System.Linq;
 namespace Penguin.Cms.Modules.Security.Controllers
 {
     [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
-    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public partial class UserController : Controller
     {
 

@@ -17,7 +17,6 @@ namespace Penguin.Cms.Modules.Security.Entities
         public bool? SaveData { get; set; }
     }
 
-    [SuppressMessage("Usage", "CA2227:Collection properties should be read only")]
     [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
     public partial class Date
     {
@@ -37,7 +36,6 @@ namespace Penguin.Cms.Modules.Security.Entities
         public long Length { get; set; }
     }
 
-    [SuppressMessage("Usage", "CA2227:Collection properties should be read only")]
     public partial class MimeType
     {
         [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]

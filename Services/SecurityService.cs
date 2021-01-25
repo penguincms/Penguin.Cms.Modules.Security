@@ -21,12 +21,6 @@ namespace Penguin.Cms.Modules.Security.Services
         /// </summary>
         public static string SecurityImageTesting { get; set; } = IMAGE_ROOT + "Security.png";
 
-        public SecurityService()
-        {
-        }
 
-        public void RegisterDependencies()
-        {
-        }
     }
 }

@@ -10,7 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Penguin.Cms.Modules.Security.Controllers
 {
-    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public class ProfileController : Controller
     {
         public IRepository<UserProfile> ProfileRepository { get; set; }

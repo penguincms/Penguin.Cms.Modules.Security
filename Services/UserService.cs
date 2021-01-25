@@ -22,7 +22,6 @@ using System.Linq;
 namespace Penguin.Cms.Modules.Security.Services
 {
     [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
     public class UserService : Penguin.Cms.Security.Services.UserService
     {
         private class LoginModel

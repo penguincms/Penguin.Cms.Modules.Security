@@ -18,7 +18,6 @@ namespace Penguin.Cms.Modules.Security.Attributes
         /// Executes the action filter against the provided filter context
         /// </summary>
         /// <param name="filterContext">The filter context to execture against</param>
-        [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (filterContext is null)
