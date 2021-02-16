@@ -19,7 +19,7 @@
     <PackageReference Include="Penguin.Web.Configuration" Version="5.0.2-TA9KKLU" />
     <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.2-TAA4YFP" />
     <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.2-TAA4YFP" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.2-TAA4YFP" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.2-TAAG11Z" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
