@@ -2,7 +2,6 @@
 
 namespace Penguin.Cms.Modules.Security.Constants.Strings
 {
-    [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
     public static partial class ConfigurationNames
     {
         public const string ALLOW_DUPLICATE_EMAIL = "AllowDuplicateEmail";

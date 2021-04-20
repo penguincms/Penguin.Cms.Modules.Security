@@ -28,7 +28,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
     {
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-        [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
         public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 

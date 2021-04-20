@@ -95,6 +95,11 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
 
         public void SetDefaultPermissions(params Entity[] o)
         {
+            if (o is null)
+            {
+                throw new ArgumentNullException(nameof(o));
+            }
+
             foreach (Entity entity in o)
             {
                 foreach (SecurityGroupPermission sg in this.GetDefaultPermissions())
