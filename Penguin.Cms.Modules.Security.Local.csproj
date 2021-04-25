@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <PackageProjectUrl>https://github.com/penguincms/Penguin.Cms.Modules.Security</PackageProjectUrl>
-    <Version>5.0.1</Version>
+    <Version>5.0.5</Version>
     <Description>Not Available</Description>
     <AssemblyName>Penguin.Cms.Modules.Security</AssemblyName>
     <RootNamespace>Penguin.Cms.Modules.Security</RootNamespace>
