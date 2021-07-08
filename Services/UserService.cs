@@ -1,4 +1,5 @@
-﻿using Penguin.Authentication.OWA;
+﻿using Penguin.Authentication.Exchange;
+using Penguin.Authentication.OWA;
 using Penguin.Cms.Modules.Security.Constants.Strings;
 using Penguin.Cms.Security;
 using Penguin.Cms.Security.Constants;
@@ -14,77 +15,14 @@ using Penguin.Messaging.Core;
 using Penguin.Persistence.Abstractions.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 
 namespace Penguin.Cms.Modules.Security.Services
 {
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-    public class UserService : Penguin.Cms.Security.Services.UserService
+    public partial class UserService : Penguin.Cms.Security.Services.UserService
     {
-        private class LoginModel
-        {
-            public string Domain { get; set; }
-
-            public Validation DomainValidation { get; set; }
-
-            public bool InDatabase { get; set; }
-
-            public bool IsValidated => this.OwaValidation.Succeeded || this.DomainValidation.Succeeded || this.LocalValidation.Succeeded;
-
-            public Validation LocalValidation { get; set; }
-
-            public string Login { get; set; }
-
-            public string OWAEmail
-            {
-                get
-                {
-                    if (string.IsNullOrWhiteSpace(this.Domain) && !this.Login.Contains("@", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return string.Empty;
-                    }
-                    else if (!this.Login.Contains("@", StringComparison.OrdinalIgnoreCase))
-                    {
-                        //TODO: Make this better;
-                        return $"{this.Login}@{this.Domain}.com";
-                    }
-                    else
-                    {
-                        return this.Login;
-                    }
-                }
-            }
-
-            public Validation OwaValidation { get; set; }
-
-            public string Password { get; set; }
-
-            public bool RequiresSave { get; set; }
-
-            public User? ThisUser { get; set; }
-
-            public LoginModel(string login, string password, string domain = "")
-            {
-                this.Login = login;
-                this.Password = password;
-                this.Domain = domain;
-
-                this.OwaValidation = new Validation();
-                this.DomainValidation = new Validation();
-                this.LocalValidation = new Validation();
-            }
-        }
-
-        private class Validation
-        {
-            public bool Attempted { get; set; }
-            public bool Succeeded { get; set; }
-            public bool Try { get; set; }
-        }
-
         protected IProvideConfigurations ConfigurationService { get; set; }
 
         protected MessageBus? MessageBus { get; set; }
@@ -92,6 +30,13 @@ namespace Penguin.Cms.Modules.Security.Services
         protected IRepository<Role> RoleRepository { get; set; }
 
         protected UserSession UserSession { get; set; }
+
+        private class Validation
+        {
+            public bool Attempted { get; set; }
+            public bool Succeeded { get; set; }
+            public bool Try { get; set; }
+        }
 
         public UserService(UserSession userSession, UserRepository userRepository, IRepository<Role> roleRepository, IProvideConfigurations configurationService, IRepository<AuthenticationToken> authenticationTokenRepository, ISendTemplates emailTemplateRepository = null, MessageBus? messageBus = null) : base(userRepository, emailTemplateRepository, authenticationTokenRepository)
         {
@@ -150,6 +95,7 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 StaticLogger.Log($"{Login}: Checking login providers...");
                 loginModel.OwaValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.OWA_LOGIN);
+                loginModel.ExchangeValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.EXCHANGE_LOGIN);
                 loginModel.DomainValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.DOMAIN_LOGIN);
                 loginModel.LocalValidation.Try = !this.ConfigurationService.GetBool(ConfigurationNames.DISABLE_LOCAL_LOGIN);
             }
@@ -170,6 +116,12 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 StaticLogger.Log($"{Login}: Trying Domain");
                 DomainLogin(loginModel);
+            }
+
+            if (loginModel.ExchangeValidation.Try)
+            {
+                StaticLogger.Log($"{Login}: Trying Exchange");
+                ExchangeLogin(loginModel);
             }
 
             if (loginModel.IsValidated)
@@ -200,14 +152,9 @@ namespace Penguin.Cms.Modules.Security.Services
                         StaticLogger.Log($"{Login}: User requires save");
                         if (!loginModel.InDatabase)
                         {
-                            if (loginModel.DomainValidation.Succeeded || loginModel.DomainValidation.Succeeded)
-                            {
-                                loginModel.ThisUser.Source = SecurityGroup.SecurityGroupSource.ActiveDirectory;
-                            }
-                            else
-                            {
-                                loginModel.ThisUser.Source = SecurityGroup.SecurityGroupSource.Client;
-                            }
+                            loginModel.ThisUser.Source = loginModel.DomainValidation.Succeeded || loginModel.DomainValidation.Succeeded
+                                ? SecurityGroup.SecurityGroupSource.ActiveDirectory
+                                : SecurityGroup.SecurityGroupSource.Client;
                         }
 
                         StaticLogger.Log($"{Login}: Saving user");
@@ -262,6 +209,13 @@ namespace Penguin.Cms.Modules.Security.Services
             loginModel.DomainValidation.Succeeded = TestDomainCredentials(loginModel.Login, loginModel.Password);
         }
 
+        private static void ExchangeLogin(LoginModel loginModel)
+        {
+            loginModel.ExchangeValidation.Attempted = true;
+
+            loginModel.ExchangeValidation.Succeeded = new ExchangeAuthenticator().Authenticate(loginModel.AuthenticationEmail, loginModel.Password).Result.IsValid;
+        }
+
         private static string GetValidDomainAccount(LoginModel loginModel)
         {
             if (loginModel.DomainValidation.Succeeded)
@@ -275,7 +229,7 @@ namespace Penguin.Cms.Modules.Security.Services
                 using DirectorySearcher search = new DirectorySearcher(entry)
                 {
                     // specify the search filter
-                    Filter = "(&(objectClass=user)(mail=" + loginModel.OWAEmail + "))"
+                    Filter = "(&(objectClass=user)(mail=" + loginModel.AuthenticationEmail + "))"
                 };
                 // specify which property values to return in the search
                 search.PropertiesToLoad.Add("anr");   // account
@@ -283,14 +237,7 @@ namespace Penguin.Cms.Modules.Security.Services
                 // perform the search
                 SearchResult result = search.FindOne();
 
-                if (result is null || result.Properties["anr"].Count < 1)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return result.Properties["anr"]?.ToString() ?? string.Empty;
-                }
+                return result is null || result.Properties["anr"].Count < 1 ? string.Empty : result.Properties["anr"]?.ToString() ?? string.Empty;
             }
             else
             {
@@ -301,7 +248,7 @@ namespace Penguin.Cms.Modules.Security.Services
         private static void OWALogin(LoginModel loginModel)
         {
             loginModel.OwaValidation.Attempted = true;
-            loginModel.OwaValidation.Succeeded = TestOWACredentials(loginModel.OWAEmail, loginModel.Password);
+            loginModel.OwaValidation.Succeeded = TestOWACredentials(loginModel.AuthenticationEmail, loginModel.Password);
         }
 
         private static bool TestDomainCredentials(string UserName, string Password)
@@ -309,14 +256,7 @@ namespace Penguin.Cms.Modules.Security.Services
             try
             {
                 using PrincipalContext context = new PrincipalContext(ContextType.Domain);
-                if (context.ValidateCredentials(UserName, Password))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return context.ValidateCredentials(UserName, Password);
             }
             catch (Exception ex)
             {
@@ -356,10 +296,10 @@ namespace Penguin.Cms.Modules.Security.Services
 
             if (loginModel.OwaValidation.Succeeded)
             {
-                if (loginModel.ThisUser.Email != loginModel.OWAEmail)
+                if (loginModel.ThisUser.Email != loginModel.AuthenticationEmail)
                 {
                     loginModel.RequiresSave = true;
-                    loginModel.ThisUser.Email = loginModel.OWAEmail;
+                    loginModel.ThisUser.Email = loginModel.AuthenticationEmail;
                 }
             }
             else if (loginModel.DomainValidation.Succeeded)

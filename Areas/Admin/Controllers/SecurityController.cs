@@ -43,7 +43,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 {
                     ToDisplay.Add(securityGroup);
                 }
-            };
+            }
 
             model = new MetaObjectHolder(ToDisplay);
 

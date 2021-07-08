@@ -10,7 +10,6 @@ namespace Penguin.Cms.Modules.Security.Models
     {
     }
 
-    [SuppressMessage("Style", "IDE1006:Naming Styles")]
     public class ClientFingerprint : KeyedObject
     {
         public string AppName { get; set; } = string.Empty;

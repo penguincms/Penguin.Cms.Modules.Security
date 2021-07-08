@@ -18,15 +18,12 @@ using Penguin.Web.Errors.Attributes;
 using Penguin.Web.Security.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Penguin.Cms.Modules.Security.Controllers
 {
-    [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
     public partial class UserController : Controller
     {
-
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
@@ -52,18 +49,9 @@ namespace Penguin.Cms.Modules.Security.Controllers
         {
             User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
-            if (user == null)
-            {
-                return this.View(BAD_AUTHENTICATION_TOKEN);
-            }
-            else if (!string.IsNullOrWhiteSpace(ReturnUrl))
-            {
-                return this.Redirect(ReturnUrl);
-            }
-            else
-            {
-                return this.Redirect("/");
-            }
+            return user == null ?
+                this.View(BAD_AUTHENTICATION_TOKEN) :
+                (ActionResult)this.Redirect(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/");
         }
 
         [LoggedIn]
@@ -147,7 +135,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
             return this.View();
         }
 
-        [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
         [HandleException(typeof(NotLoggedInException))]
         public ActionResult Login(string? Url = null)
         {
@@ -243,12 +230,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [RequiresConfiguration(ConfigurationNames.MANUAL_USER_REGISTRATION, true)]
         public ActionResult Register()
         {
-            if (this.UserSession.IsLoggedIn)
-            {
-                return this.RedirectToAction("Index", "Home", null);
-            }
-
-            return this.View();
+            return this.UserSession.IsLoggedIn ? this.RedirectToAction("Index", "Home", null) : (ActionResult)this.View();
         }
 
         [HttpPost]
@@ -329,14 +311,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         {
             User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
-            if (user == null)
-            {
-                return this.View(BAD_AUTHENTICATION_TOKEN);
-            }
-            else
-            {
-                return this.Redirect("ChangePassword");
-            }
+            return user == null ? this.View(BAD_AUTHENTICATION_TOKEN) : (ActionResult)this.Redirect("ChangePassword");
         }
 
         public ActionResult ValidateEmail(string Id)

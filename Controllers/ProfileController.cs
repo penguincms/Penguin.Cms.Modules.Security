@@ -6,7 +6,6 @@ using Penguin.Cms.Web.Security;
 using Penguin.Persistence.Abstractions.Interfaces;
 using Penguin.Web.Security.Attributes;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Penguin.Cms.Modules.Security.Controllers
 {
@@ -31,12 +30,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         {
             UserProfile? model = this.ProfileRepository.GetByLogin(this.UserSession.LoggedInUser.Login)?.GetData<UserProfile>();
 
-            if (model is null)
-            {
-                throw new Exception("User profile not found");
-            }
-
-            return this.View(model);
+            return model is null ? throw new Exception("User profile not found") : this.View(model);
         }
 
         [HttpPost]

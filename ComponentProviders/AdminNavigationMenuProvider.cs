@@ -24,8 +24,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                             Href = "/Admin/Security/Index",
                             Permissions = new List<ISecurityGroupPermission>()
                             {
-                                this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                             },
                                 Children = new List<INavigationMenu>()
                                 {
@@ -37,8 +37,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                         Href = "/Admin/User/List",
                                         Permissions = new List<ISecurityGroupPermission>()
                                         {
-                                             this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                             this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                             CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                             CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                         }
                                     },
                                     new NavigationMenu()
@@ -49,8 +49,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                         Href = "/Admin/User/Edit",
                                         Permissions = new List<ISecurityGroupPermission>()
                                         {
-                                            this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                            this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                            CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                            CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                         }
                                     },
                                     new NavigationMenu()
@@ -61,8 +61,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                         Href = "/Admin/Group/List",
                                         Permissions = new List<ISecurityGroupPermission>()
                                         {
-                                            this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                            this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                            CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                            CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                         }
                                    },
                                    new NavigationMenu()
@@ -73,8 +73,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                        Href = "/Admin/Group/Edit",
                                        Permissions = new List<ISecurityGroupPermission>()
                                        {
-                                           this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                           this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                           CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                           CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                        }
                                     },
                                     new NavigationMenu()
@@ -85,8 +85,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                         Href = "/Admin/Role/List",
                                         Permissions = new List<ISecurityGroupPermission>()
                                         {
-                                            this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                            this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                            CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                            CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                         }
                                     },
                                     new NavigationMenu()
@@ -97,8 +97,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                                         Href = "/Admin/Role/Edit",
                                         Permissions = new List<ISecurityGroupPermission>()
                                         {
-                                            this.CreatePermission(Roles.UserManager, PermissionTypes.Read),
-                                            this.CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
+                                            CreatePermission(Roles.UserManager, PermissionTypes.Read),
+                                            CreatePermission(Roles.SysAdmin, PermissionTypes.Read | PermissionTypes.Write)
                                         }
                                     }
                                 }

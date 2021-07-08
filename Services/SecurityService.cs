@@ -20,7 +20,5 @@ namespace Penguin.Cms.Modules.Security.Services
         /// The file path for the generated security image when in debug
         /// </summary>
         public static string SecurityImageTesting { get; set; } = IMAGE_ROOT + "Security.png";
-
-
     }
 }

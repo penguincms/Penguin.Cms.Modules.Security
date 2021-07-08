@@ -58,13 +58,9 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
 
         public bool CheckAccess(Entity entity, PermissionTypes permissionTypes = PermissionTypes.Read)
         {
-            if (entity is null)
-            {
-                return false;
-            }
-
-            return new ObjectSecurityProvider(this.UserSession).CheckAccess(entity) ||
-             this.EntityPermissionsRepository.AllowsAccessType(entity, this.UserSession.LoggedInUser, permissionTypes);
+            return !(entity is null)
+             && (new ObjectSecurityProvider(this.UserSession).CheckAccess(entity) ||
+             this.EntityPermissionsRepository.AllowsAccessType(entity, this.UserSession.LoggedInUser, permissionTypes));
         }
 
         public void ClonePermissions(Entity source, Entity destination)

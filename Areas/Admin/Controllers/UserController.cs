@@ -40,12 +40,9 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
         [DynamicPropertyHandler(DisplayContexts.Edit, typeof(User), nameof(Penguin.Cms.Security.User.Password))]
         public ActionResult ResetPasswordButton(IMetaObject model)
         {
-            if (model is null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            return this.View(model.Parent.FromDatabase<User>(this.ServiceProvider));
+            return model is null
+                ? throw new ArgumentNullException(nameof(model))
+                : this.View(model.Parent.FromDatabase<User>(this.ServiceProvider));
         }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Penguin.Security.Abstractions.Interfaces;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Security;
 
 namespace Penguin.Cms.Modules.Security.Attributes

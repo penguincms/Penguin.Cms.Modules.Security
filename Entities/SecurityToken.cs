@@ -2,7 +2,6 @@
 using Penguin.Shared.Objects;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Penguin.Cms.Modules.Security.Entities
 {
@@ -17,7 +16,6 @@ namespace Penguin.Cms.Modules.Security.Entities
         public bool? SaveData { get; set; }
     }
 
-    [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
     public partial class Date
     {
         [JsonProperty("current")]
@@ -48,7 +46,6 @@ namespace Penguin.Cms.Modules.Security.Entities
         public string? Type { get; set; }
     }
 
-    [SuppressMessage("Usage", "CA2227:Collection properties should be read only")]
     public partial class Navigator
     {
         [JsonProperty("appCodeName")]
