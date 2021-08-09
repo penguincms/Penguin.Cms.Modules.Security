@@ -19,8 +19,8 @@
     <PackageReference Include="Penguin.Security" Version="5.0.6-TAHULSY" />
     <PackageReference Include="Penguin.Web.Configuration" Version="5.0.6-TAHULSY" />
     <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.6-TAHULSY" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.6-TAHULSY" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.6-TAHULSY" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.6-TAJHTXV" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.6-TAJHTXV" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
