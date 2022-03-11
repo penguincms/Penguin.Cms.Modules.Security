@@ -109,19 +109,42 @@ namespace Penguin.Cms.Modules.Security.Services
             if (loginModel.OwaValidation.Try)
             {
                 StaticLogger.Log($"{Login}: Trying OWA");
-                OWALogin(loginModel);
+
+                try
+                {
+                    OWALogin(loginModel);
+                }
+                catch (Exception ex)
+                {
+                    StaticLogger.Log(ex.Message);
+                }
             }
 
             if (loginModel.DomainValidation.Try)
             {
                 StaticLogger.Log($"{Login}: Trying Domain");
-                DomainLogin(loginModel);
+
+                try
+                {
+                    DomainLogin(loginModel);
+                }
+                catch (Exception ex)
+                {
+                    StaticLogger.Log(ex.Message);
+                }
             }
 
             if (loginModel.ExchangeValidation.Try)
             {
                 StaticLogger.Log($"{Login}: Trying Exchange");
-                ExchangeLogin(loginModel);
+
+                try
+                {
+                    ExchangeLogin(loginModel);
+                } catch(Exception ex)
+                {
+                    StaticLogger.Log(ex.Message);
+                }
             }
 
             if (loginModel.IsValidated)

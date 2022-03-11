@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Penguin.Shared.Objects;
+using Penguin.Shared;
 using System;
 using System.Collections.Generic;
 
