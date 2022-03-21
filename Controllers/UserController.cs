@@ -56,10 +56,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         [LoggedIn]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
-        public ActionResult ChangePassword()
-        {
-            return this.View("ChangePassword");
-        }
+        public ActionResult ChangePassword() => this.View("ChangePassword");
 
         [HttpPost]
         [LoggedIn]
@@ -88,10 +85,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
             return this.View("ChangePasswordSuccess");
         }
 
-        public ActionResult EmailValidationRequired(string Id)
-        {
-            return this.View((object)Id);
-        }
+        public ActionResult EmailValidationRequired(string Id) => this.View((object)Id);
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
@@ -104,10 +98,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
-        public ActionResult ForgotLogin()
-        {
-            return this.View();
-        }
+        public ActionResult ForgotLogin() => this.View();
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
@@ -120,10 +111,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
-        public ActionResult ForgotPassword()
-        {
-            return this.View();
-        }
+        public ActionResult ForgotPassword() => this.View();
 
         public ActionResult GenerateEmailValidation(string Id)
         {
@@ -214,10 +202,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
         }
 
-        public IActionResult LoginHelp()
-        {
-            return this.View();
-        }
+        public IActionResult LoginHelp() => this.View();
 
         [LoggedIn]
         public ActionResult LogOut()
@@ -228,10 +213,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         }
 
         [RequiresConfiguration(ConfigurationNames.MANUAL_USER_REGISTRATION, true)]
-        public ActionResult Register()
-        {
-            return this.UserSession.IsLoggedIn ? this.RedirectToAction("Index", "Home", null) : (ActionResult)this.View();
-        }
+        public ActionResult Register() => this.UserSession.IsLoggedIn ? this.RedirectToAction("Index", "Home", null) : (ActionResult)this.View();
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.MANUAL_USER_REGISTRATION, true)]
@@ -329,9 +311,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
             return this.View();
         }
 
-        private string GetEmailValidationLink()
-        {
-            return $"{new Uri(this.Request.Path).Scheme}://{new Uri(this.Request.Path).Authority}{this.Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
-        }
+        private string GetEmailValidationLink() => $"{new Uri(this.Request.Path).Scheme}://{new Uri(this.Request.Path).Authority}{this.Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Penguin.Persistence.Abstractions;
 using Penguin.Persistence.Abstractions.Attributes.Relations;
 using Penguin.Persistence.Abstractions.Models.Complex;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Penguin.Cms.Modules.Security.Models
 {
