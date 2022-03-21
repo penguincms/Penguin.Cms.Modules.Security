@@ -14,9 +14,6 @@ namespace Penguin.Cms.Modules.Security.ViewComponents
             this.UserRepository = userRepository;
         }
 
-        public IViewComponentResult Invoke(Guid Model)
-        {
-            return this.View("~/Views/Security/UserRecord.cshtml", this.UserRepository.Find(Model) ?? Users.Guest);
-        }
+        public IViewComponentResult Invoke(Guid Model) => this.View("~/Views/Security/UserRecord.cshtml", this.UserRepository.Find(Model) ?? Users.Guest);
     }
 }

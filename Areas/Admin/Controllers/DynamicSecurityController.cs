@@ -28,10 +28,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult AddPermissionsGet(AddPermisionsPageModel model)
-        {
-            return this.View(model);
-        }
+        public virtual ActionResult AddPermissionsGet(AddPermisionsPageModel model) => this.View(model);
 
         [HttpPost]
         public virtual ActionResult AddPermissionsPost([FromBody] AddPermisionsPageModel model)
