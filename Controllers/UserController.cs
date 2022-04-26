@@ -104,7 +104,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ForgotPassword(string login)
         {
-            this.UserService.RequestPasswordReset(login);
+            _ = this.UserService.RequestPasswordReset(login);
 
             return this.View("SentPassword");
         }
@@ -282,7 +282,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ResetPassword(string login)
         {
-            this.UserService.RequestPasswordReset(login);
+            _ = this.UserService.RequestPasswordReset(login);
 
             return this.View();
         }

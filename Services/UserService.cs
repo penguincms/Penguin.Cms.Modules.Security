@@ -141,7 +141,8 @@ namespace Penguin.Cms.Modules.Security.Services
                 try
                 {
                     ExchangeLogin(loginModel);
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     StaticLogger.Log(ex.Message);
                 }

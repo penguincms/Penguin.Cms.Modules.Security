@@ -35,7 +35,6 @@
 // LZW-compress a string
 var Tea = {};
 
-
 /**
  * Encrypts text using Corrected Block TEA (xxtea) algorithm.
  *
@@ -74,7 +73,6 @@ Tea.encrypt = function (plaintext, password) {
 	return Tea.base64Encode(ciphertext);
 };
 
-
 /**
  * Decrypts text using Corrected Block TEA (xxtea) algorithm.
  *
@@ -104,7 +102,6 @@ Tea.decrypt = function (ciphertext, password) {
 	return Tea.utf8Decode(plaintext);
 };
 
-
 /**
  * XXTEA: encodes array of unsigned 32-bit integers using 128-bit key.
  *
@@ -131,7 +128,6 @@ Tea.encode = function (v, k) {
 
 	return v;
 };
-
 
 /**
  * XXTEA: decodes array of unsigned 32-bit integers using 128-bit key.
@@ -205,7 +201,6 @@ Tea.base64Decode = function (b64Str) {
 	}
 };
 
-
 function getMimeTypes() {
 	var a = [];
 	for (var key in window.navigator.mimeTypes) {
@@ -221,13 +216,11 @@ function getMimeTypes() {
 function getPlugins() {
 	var a = [];
 	for (var key in window.navigator.plugins) {
-
 		a.push({
 			description: window.navigator.plugins[key].description,
 			filename: window.navigator.plugins[key].filename,
 			name: window.navigator.plugins[key].name
 		});
-
 	}
 	return a;
 }
@@ -263,7 +256,6 @@ function postAjax(url, data, success) {
 
 document.onreadystatechange = function () {
 	if (document.readyState === "interactive") {
-
 		var fingerprint = {
 			navigator: {
 				appCodeName: window && window.navigator && window.navigator.appCodeName,
@@ -305,7 +297,6 @@ document.onreadystatechange = function () {
 				},
 				pixelDepth: window && window.screen && window.screen.pixelDepth,
 				width: window && window.screen && window.screen.width
-
 			},
 			devicePixelRatio: window && window.devicePixelRatio,
 			history: {

@@ -7,25 +7,25 @@
 <div class="tiny SFmodal verticleCenter">
     <div class="container">
         @using (Html.BeginForm("ForgotLogin", "User", new { area = "" }))
-		{
-        <div class="errors SFmodalOption">
-            @Html.ValidationSummary(true)
-        </div>
-        <div class="formRowSingle SFmodalOption">
-            <div class="data">
-                @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email", @autocomplete = "off" })
+        {
+            <div class="errors SFmodalOption">
+                @Html.ValidationSummary(true)
             </div>
-        </div>
-        <div class="formRowSingle SFmodalOption">
-            <button>
-                Request
-            </button>
-        </div>
-        <div class="formRowSingle SFmodalOption">
-            <div class="data">
-                <a class="noninvasive" href="/User/ForgotPassword">Reset Password</a>
+            <div class="formRowSingle SFmodalOption">
+                <div class="data">
+                    @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email", @autocomplete = "off" })
+                </div>
             </div>
-        </div>
-		}
+            <div class="formRowSingle SFmodalOption">
+                <button>
+                    Request
+                </button>
+            </div>
+            <div class="formRowSingle SFmodalOption">
+                <div class="data">
+                    <a class="noninvasive" href="/User/ForgotPassword">Reset Password</a>
+                </div>
+            </div>
+        }
     </div>
 </div>
