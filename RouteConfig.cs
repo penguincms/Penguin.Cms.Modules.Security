@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Routing;
 using Penguin.Web.Abstractions.Interfaces;
 
-namespace Framework.Client
+namespace Penguin.Cms.Modules.Security
 {
     public class RouteConfig : IRouteConfig
     {
         public void RegisterRoutes(IRouteBuilder routes)
         {
-            routes.MapRoute(
+            _ = routes.MapRoute(
                 name: "Profile",
                 template: "V/{Username?}",
                 defaults: new { controller = "Profile", action = "V" }

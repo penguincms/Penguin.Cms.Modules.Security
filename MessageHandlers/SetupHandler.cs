@@ -42,7 +42,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             using (IWriteContext context = this.RoleRepository.WriteContext())
             {
-                this.RoleRepository.CreateIfNotExists(RoleNames.SYS_ADMIN, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
+                _ = this.RoleRepository.CreateIfNotExists(RoleNames.SYS_ADMIN, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
             }
 
             using (IWriteContext context = this.RoleRepository.WriteContext())
@@ -57,7 +57,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 
                 foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
                 {
-                    this.RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
+                    _ = this.RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
                 }
             }
 
@@ -163,7 +163,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
             {
                 if (this.GroupRepository.Find(g) is Group ng)
                 {
-                    (target.Groups as IList<Group>)?.Remove(g);
+                    _ = ((target.Groups as IList<Group>)?.Remove(g));
 
                     (target.Groups as IList<Group>)?.Add(ng);
                 }
@@ -176,7 +176,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
             {
                 if (this.RoleRepository.Find(r) is Role nr)
                 {
-                    (target.Roles as IList<Role>)?.Remove(r);
+                    _ = ((target.Roles as IList<Role>)?.Remove(r));
 
                     (target.Roles as IList<Role>)?.Add(nr);
                 }

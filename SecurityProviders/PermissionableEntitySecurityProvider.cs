@@ -46,9 +46,15 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
             }
         }
 
-        public void AddPermissions(Entity entity, PermissionTypes permissionTypes, ISecurityGroup source = null) => this.EntityPermissionsRepository.AddPermission(entity, this.SecurityGroupRepository.Find(source?.Guid ?? this.UserSession.LoggedInUser.Guid), permissionTypes);
+        public void AddPermissions(Entity entity, PermissionTypes permissionTypes, ISecurityGroup source = null)
+        {
+            this.EntityPermissionsRepository.AddPermission(entity, this.SecurityGroupRepository.Find(source?.Guid ?? this.UserSession.LoggedInUser.Guid), permissionTypes);
+        }
 
-        public void AddPermissions(Entity entity, PermissionTypes permissionTypes, Guid source) => this.AddPermissions(entity, permissionTypes, this.SecurityGroupRepository.Find(source));
+        public void AddPermissions(Entity entity, PermissionTypes permissionTypes, Guid source)
+        {
+            this.AddPermissions(entity, permissionTypes, this.SecurityGroupRepository.Find(source));
+        }
 
         public bool CheckAccess(Entity entity, PermissionTypes permissionTypes = PermissionTypes.Read)
         {
@@ -104,7 +110,10 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
             }
         }
 
-        public void SetLoggedIn(Entity entity) => this.EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
+        public void SetLoggedIn(Entity entity)
+        {
+            this.EntityPermissionsRepository.AddPermission(entity, Roles.LoggedIn, PermissionTypes.Read);
+        }
 
         public void SetPublic(Entity entity)
         {

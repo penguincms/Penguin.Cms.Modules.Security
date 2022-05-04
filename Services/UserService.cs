@@ -10,7 +10,7 @@ using Penguin.Configuration.Abstractions.Extensions;
 using Penguin.Configuration.Abstractions.Interfaces;
 using Penguin.Debugging;
 using Penguin.Email.Templating.Abstractions.Interfaces;
-using Penguin.Extensions.Strings.Security;
+using Penguin.Extensions.String.Security;
 using Penguin.Messaging.Core;
 using Penguin.Persistence.Abstractions.Interfaces;
 using System;
@@ -246,7 +246,7 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 return loginModel.Login;
             }
-            else if (loginModel.OwaValidation.Succeeded && (loginModel.DomainValidation.Attempted && !loginModel.DomainValidation.Succeeded))
+            else if (loginModel.OwaValidation.Succeeded && loginModel.DomainValidation.Attempted && !loginModel.DomainValidation.Succeeded)
             {
                 using DirectoryEntry entry = new DirectoryEntry();
                 // get a DirectorySearcher object
@@ -256,7 +256,7 @@ namespace Penguin.Cms.Modules.Security.Services
                     Filter = "(&(objectClass=user)(mail=" + loginModel.AuthenticationEmail + "))"
                 };
                 // specify which property values to return in the search
-                search.PropertiesToLoad.Add("anr");   // account
+                _ = search.PropertiesToLoad.Add("anr");   // account
 
                 // perform the search
                 SearchResult result = search.FindOne();
@@ -336,7 +336,7 @@ namespace Penguin.Cms.Modules.Security.Services
                     Filter = "(&(objectClass=user)(anr=" + loginModel.Login + "))"
                 };
                 // specify which property values to return in the search
-                search.PropertiesToLoad.Add("mail");        // smtp mail address
+                _ = search.PropertiesToLoad.Add("mail");        // smtp mail address
 
                 // perform the search
                 SearchResult result = search.FindOne();
@@ -380,8 +380,8 @@ namespace Penguin.Cms.Modules.Security.Services
                         Filter = "(&(objectClass=user)(anr=" + DomainLogin + "))"
                     };
                     // specify which property values to return in the search
-                    search.PropertiesToLoad.Add("givenName");   // first name
-                    search.PropertiesToLoad.Add("sn");          // last name
+                    _ = search.PropertiesToLoad.Add("givenName");   // first name
+                    _ = search.PropertiesToLoad.Add("sn");          // last name
 
                     // perform the search
                     SearchResult result = search.FindOne();
