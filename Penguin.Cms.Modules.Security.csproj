@@ -14,13 +14,13 @@
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.7" />
-    <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Security" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Web.Configuration" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Authentication.Exchange" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.6-TB0E36F" />
-    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.6-TB0E36F" />
+    <PackageReference Include="Penguin.Authentication.OWA" Version="5.0.6-TB1ZEZV" />
+    <PackageReference Include="Penguin.Security" Version="5.0.6-TB1ZEZV" />
+    <PackageReference Include="Penguin.Web.Configuration" Version="5.0.6-TB1ZEZV" />
+    <PackageReference Include="Penguin.Authentication.Exchange" Version="5.0.6-TB1ZEZV" />
+    <PackageReference Include="Penguin.Cms.Web.Security" Version="5.0.6-TB1ZEZV" />
+    <PackageReference Include="Penguin.Cms.Security.Repositories" Version="5.0.6-TB3XO8Q" />
+    <PackageReference Include="Penguin.Cms.Modules.Dynamic" Version="5.0.6-TB3XO8Q" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\**\*" />
