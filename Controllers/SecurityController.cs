@@ -19,11 +19,16 @@ namespace Penguin.Cms.Modules.Security.Controllers
     public class SecurityController : Controller
     {
         protected IRepository<Group> GroupRepository { get; set; }
+
         [Obsolete]
         protected IHostingEnvironment HostingEnvironment { get; set; }
+
         protected IRepository<Role> RoleRepository { get; set; }
+
         protected ISession Session { get; set; }
+
         protected UserRepository UserRepository { get; set; }
+
         protected IUserSession UserSession { get; set; }
 
         [Obsolete]

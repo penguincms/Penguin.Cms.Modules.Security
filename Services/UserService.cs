@@ -34,7 +34,9 @@ namespace Penguin.Cms.Modules.Security.Services
         private class Validation
         {
             public bool Attempted { get; set; }
+
             public bool Succeeded { get; set; }
+
             public bool Try { get; set; }
         }
 

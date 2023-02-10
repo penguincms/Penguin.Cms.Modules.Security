@@ -30,6 +30,7 @@ namespace Penguin.Cms.Modules.Security.Services
             public string Domain { get; set; }
 
             public Validation DomainValidation { get; set; }
+
             public Validation ExchangeValidation { get; set; }
 
             public bool InDatabase { get; set; }
@@ -39,6 +40,7 @@ namespace Penguin.Cms.Modules.Security.Services
             public Validation LocalValidation { get; set; }
 
             public string Login { get; set; }
+
             public Validation OwaValidation { get; set; }
 
             public string Password { get; set; }

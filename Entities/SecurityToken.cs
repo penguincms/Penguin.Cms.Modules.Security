@@ -179,6 +179,7 @@ namespace Penguin.Cms.Modules.Security.Entities
         public long InnerWidth { get; set; }
 
         public TFE IsBlocked { get; set; }
+
         public TFE IsTor { get; set; }
 
         [JsonProperty("navigator")]

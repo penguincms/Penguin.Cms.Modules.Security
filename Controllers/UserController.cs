@@ -27,10 +27,15 @@ namespace Penguin.Cms.Modules.Security.Controllers
         public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
 
         protected IProvideConfigurations ConfigurationService { get; set; }
+
         protected EmailValidationRepository EmailValidationRepository { get; set; }
+
         protected MessageBus? MessageBus { get; set; }
+
         protected UserRepository UserRepository { get; set; }
+
         protected UserService UserService { get; set; }
+
         protected UserSession UserSession { get; set; }
 
         public UserController(IProvideConfigurations configurationService, UserSession userSession, UserRepository userRepository, UserService userService, EmailValidationRepository emailValidationRepository, MessageBus? messageBus = null)

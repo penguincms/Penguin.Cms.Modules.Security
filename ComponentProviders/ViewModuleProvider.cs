@@ -14,6 +14,7 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
     public class ViewModuleProvider : IProvideComponents<ViewModule, Entity>
     {
         protected EntityPermissionsRepository EntityPermissionsRepository { get; set; }
+
         protected PermissionableEntitySecurityProvider PermissionableEntitySecurityProvider { get; set; }
 
         public ViewModuleProvider(EntityPermissionsRepository entityPermissionsRepository, PermissionableEntitySecurityProvider permissionableEntitySecurityProvider)

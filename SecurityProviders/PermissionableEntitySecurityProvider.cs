@@ -19,9 +19,13 @@ namespace Penguin.Cms.Modules.Security.SecurityProviders
     public class PermissionableEntitySecurityProvider : ISecurityProvider<Entity>, IMessageHandler<IUpdating<Entity>>, ISelfRegistering
     {
         protected EntityPermissionsRepository EntityPermissionsRepository { get; set; }
+
         protected IRepository<Role> RoleRepository { get; set; }
+
         protected IEntityRepository<SecurityGroup> SecurityGroupRepository { get; set; }
+
         protected UserRepository UserRepository { get; set; }
+
         protected IUserSession UserSession { get; set; }
 
         public PermissionableEntitySecurityProvider(IUserSession userSession, IEntityRepository<SecurityGroup> securityGroupRepository, EntityPermissionsRepository entityPermissionsRepository, IRepository<Role> roleRepository, UserRepository userRepository)

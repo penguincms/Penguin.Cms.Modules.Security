@@ -22,10 +22,15 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
     public class SetupHandler : IMessageHandler<Setup<SecurityGroup>>
     {
         protected ComponentService ComponentService { get; set; }
+
         protected IEntityRepository<Group> GroupRepository { get; set; }
+
         protected IEntityRepository<Role> RoleRepository { get; set; }
+
         protected IRepository<SecurityGroup> SecurityGroupRepository { get; set; }
+
         protected PermissionableEntitySecurityProvider SecurityProvider { get; set; }
+
         protected UserRepository UserRepository { get; set; }
 
         public SetupHandler(IRepository<SecurityGroup> securityGroupRepository, PermissionableEntitySecurityProvider securityProvider, ComponentService componentService, IEntityRepository<Group> groupRepository, UserRepository userRepository, IEntityRepository<Role> roleRepository)
