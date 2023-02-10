@@ -11,11 +11,11 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 get
                 {
-                    if (string.IsNullOrWhiteSpace(this.Domain) && !this.Login.Contains("@", StringComparison.OrdinalIgnoreCase))
+                    if (string.IsNullOrWhiteSpace(this.Domain) && !this.Login.Contains('@', StringComparison.OrdinalIgnoreCase))
                     {
                         return string.Empty;
                     }
-                    else if (!this.Login.Contains("@", StringComparison.OrdinalIgnoreCase))
+                    else if (!this.Login.Contains('@', StringComparison.OrdinalIgnoreCase))
                     {
                         //TODO: Make this better;
                         return $"{this.Login}@{this.Domain}.com";
