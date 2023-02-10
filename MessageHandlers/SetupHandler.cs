@@ -30,60 +30,60 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 
         public SetupHandler(IRepository<SecurityGroup> securityGroupRepository, PermissionableEntitySecurityProvider securityProvider, ComponentService componentService, IEntityRepository<Group> groupRepository, UserRepository userRepository, IEntityRepository<Role> roleRepository)
         {
-            this.SecurityGroupRepository = securityGroupRepository;
-            this.ComponentService = componentService;
-            this.GroupRepository = groupRepository;
-            this.RoleRepository = roleRepository;
-            this.UserRepository = userRepository;
-            this.SecurityProvider = securityProvider;
+            SecurityGroupRepository = securityGroupRepository;
+            ComponentService = componentService;
+            GroupRepository = groupRepository;
+            RoleRepository = roleRepository;
+            UserRepository = userRepository;
+            SecurityProvider = securityProvider;
         }
 
         public void AcceptMessage(Setup<SecurityGroup> message)
         {
-            using (IWriteContext context = this.RoleRepository.WriteContext())
+            using (IWriteContext context = RoleRepository.WriteContext())
             {
-                _ = this.RoleRepository.CreateIfNotExists(RoleNames.SYS_ADMIN, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
+                _ = RoleRepository.CreateIfNotExists(RoleNames.SYS_ADMIN, Penguin.Cms.Security.Constants.Strings.RoleStrings.SysAdmin.Description);
             }
 
-            using (IWriteContext context = this.RoleRepository.WriteContext())
+            using (IWriteContext context = RoleRepository.WriteContext())
             {
-                foreach (Role u in this.GatherSecurity<Role, IRole>(typeof(Roles)))
+                foreach (Role u in GatherSecurity<Role, IRole>(typeof(Roles)))
                 {
-                    if (this.RoleRepository.Find(u.ExternalId) is null)
+                    if (RoleRepository.Find(u.ExternalId) is null)
                     {
-                        this.RoleRepository.Add(u);
+                        RoleRepository.Add(u);
                     }
                 }
 
                 foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
                 {
-                    _ = this.RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
+                    _ = RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
                 }
             }
 
-            using (IWriteContext context = this.GroupRepository.WriteContext())
+            using (IWriteContext context = GroupRepository.WriteContext())
             {
-                foreach (Group g in this.GatherSecurity<Group, IGroup>(typeof(Groups)))
+                foreach (Group g in GatherSecurity<Group, IGroup>(typeof(Groups)))
                 {
-                    if (this.GroupRepository.Find(g.ExternalId) is null)
+                    if (GroupRepository.Find(g.ExternalId) is null)
                     {
-                        this.RefreshRoles(g);
+                        RefreshRoles(g);
 
-                        this.GroupRepository.AddOrUpdate(g);
+                        GroupRepository.AddOrUpdate(g);
                     }
                 }
             }
 
-            using (IWriteContext context = this.UserRepository.WriteContext())
+            using (IWriteContext context = UserRepository.WriteContext())
             {
-                foreach (User u in this.GatherSecurity<User, IUser>(typeof(Users)))
+                foreach (User u in GatherSecurity<User, IUser>(typeof(Users)))
                 {
-                    if (this.UserRepository.Find(u.ExternalId) is null)
+                    if (UserRepository.Find(u.ExternalId) is null)
                     {
-                        this.RefreshRoles(u);
-                        this.RefreshGroups(u);
+                        RefreshRoles(u);
+                        RefreshGroups(u);
 
-                        this.UserRepository.AddOrUpdate(u);
+                        UserRepository.AddOrUpdate(u);
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
                 }
             }
 
-            foreach (TInterface sec in this.ComponentService.GetComponents<TInterface>())
+            foreach (TInterface sec in ComponentService.GetComponents<TInterface>())
             {
                 if (sec is TSecurityGroup s)
                 {
@@ -107,19 +107,19 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
                 }
                 else
                 {
-                    TSecurityGroup toReturn = new TSecurityGroup()
+                    TSecurityGroup toReturn = new()
                     {
                         ExternalId = sec.ExternalId,
                         Description = sec.Description
                     };
 
-                    List<(Group, IGroup)> loadGroups = new List<(Group, IGroup)>();
+                    List<(Group, IGroup)> loadGroups = new();
 
                     if (toReturn is User user && sec is IUser su)
                     {
                         foreach (IGroup groupInterface in su.Groups)
                         {
-                            Group newGroup = new Group()
+                            Group newGroup = new()
                             {
                                 ExternalId = groupInterface.ExternalId,
                                 Description = groupInterface.Description
@@ -138,7 +138,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 
                     foreach ((Group groupToLoad, IGroup source) in loadGroups)
                     {
-                        List<Role> Roles = new List<Role>();
+                        List<Role> Roles = new();
 
                         foreach (IRole r in source.Roles)
                         {
@@ -161,7 +161,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             foreach (Group g in target.Groups.ToList())
             {
-                if (this.GroupRepository.Find(g) is Group ng)
+                if (GroupRepository.Find(g) is Group ng)
                 {
                     _ = ((target.Groups as IList<Group>)?.Remove(g));
 
@@ -174,7 +174,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
         {
             foreach (Role r in target.Roles.ToList())
             {
-                if (this.RoleRepository.Find(r) is Role nr)
+                if (RoleRepository.Find(r) is Role nr)
                 {
                     _ = ((target.Roles as IList<Role>)?.Remove(r));
 

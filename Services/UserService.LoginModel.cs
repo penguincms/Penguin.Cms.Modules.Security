@@ -11,18 +11,18 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 get
                 {
-                    if (string.IsNullOrWhiteSpace(this.Domain) && !this.Login.Contains('@', StringComparison.OrdinalIgnoreCase))
+                    if (string.IsNullOrWhiteSpace(Domain) && !Login.Contains('@', StringComparison.OrdinalIgnoreCase))
                     {
                         return string.Empty;
                     }
-                    else if (!this.Login.Contains('@', StringComparison.OrdinalIgnoreCase))
+                    else if (!Login.Contains('@', StringComparison.OrdinalIgnoreCase))
                     {
                         //TODO: Make this better;
-                        return $"{this.Login}@{this.Domain}.com";
+                        return $"{Login}@{Domain}.com";
                     }
                     else
                     {
-                        return this.Login;
+                        return Login;
                     }
                 }
             }
@@ -34,7 +34,7 @@ namespace Penguin.Cms.Modules.Security.Services
 
             public bool InDatabase { get; set; }
 
-            public bool IsValidated => this.OwaValidation.Succeeded || this.DomainValidation.Succeeded || this.LocalValidation.Succeeded || this.ExchangeValidation.Succeeded;
+            public bool IsValidated => OwaValidation.Succeeded || DomainValidation.Succeeded || LocalValidation.Succeeded || ExchangeValidation.Succeeded;
 
             public Validation LocalValidation { get; set; }
 
@@ -49,14 +49,14 @@ namespace Penguin.Cms.Modules.Security.Services
 
             public LoginModel(string login, string password, string domain = "")
             {
-                this.Login = login;
-                this.Password = password;
-                this.Domain = domain;
+                Login = login;
+                Password = password;
+                Domain = domain;
 
-                this.OwaValidation = new Validation();
-                this.DomainValidation = new Validation();
-                this.LocalValidation = new Validation();
-                this.ExchangeValidation = new Validation();
+                OwaValidation = new Validation();
+                DomainValidation = new Validation();
+                LocalValidation = new Validation();
+                ExchangeValidation = new Validation();
             }
         }
     }

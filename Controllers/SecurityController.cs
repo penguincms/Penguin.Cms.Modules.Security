@@ -19,41 +19,44 @@ namespace Penguin.Cms.Modules.Security.Controllers
     public class SecurityController : Controller
     {
         protected IRepository<Group> GroupRepository { get; set; }
+        [Obsolete]
         protected IHostingEnvironment HostingEnvironment { get; set; }
         protected IRepository<Role> RoleRepository { get; set; }
         protected ISession Session { get; set; }
         protected UserRepository UserRepository { get; set; }
         protected IUserSession UserSession { get; set; }
 
+        [Obsolete]
         public SecurityController(ISession session, IRepository<Group> groupRepository, IRepository<Role> roleRepository, IHostingEnvironment hostingEnvironment, UserRepository userRepository, IUserSession userSession)
         {
-            this.Session = session;
-            this.UserSession = userSession;
-            this.UserRepository = userRepository;
-            this.GroupRepository = groupRepository;
-            this.RoleRepository = roleRepository;
-            this.HostingEnvironment = hostingEnvironment;
+            Session = session;
+            UserSession = userSession;
+            UserRepository = userRepository;
+            GroupRepository = groupRepository;
+            RoleRepository = roleRepository;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public ActionResult Fingerprint([FromBody] string content)
         {
-            TeaEncryptor tea = new TeaEncryptor(this.Session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
+            TeaEncryptor tea = new(Session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
 
             string json = tea.Decrypt(content);
 
             SecurityToken token = JsonConvert.DeserializeObject<SecurityToken>(json);
 
-            this.Session.Set(SecurityService.SECURITY_TOKEN_NAME, token);
+            Session.Set(SecurityService.SECURITY_TOKEN_NAME, token);
 
-            return this.Content("");
+            return Content("");
         }
 
+        [Obsolete]
         public FileContentResult Image()
         {
-            string FilePath = this.HostingEnvironment.ContentRootPath + SecurityService.IMAGE_ROOT + "Security.png";
+            string FilePath = HostingEnvironment.ContentRootPath + SecurityService.IMAGE_ROOT + "Security.png";
             byte[] toReturn;
             byte[] password = new byte[SecurityService.PASSWORD_LENGTH];
-            Random r = new Random();
+            Random r = new();
 
             r.NextBytes(password);
 
@@ -73,16 +76,16 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 }
             }
 
-            this.Session.Set(SecurityService.SECURITY_TOKEN_PASSWORD_NAME, password);
+            Session.Set(SecurityService.SECURITY_TOKEN_PASSWORD_NAME, password);
 
-            return this.File(toReturn, "image/png", System.IO.Path.GetFileName(SecurityService.SecurityImage));
+            return File(toReturn, "image/png", System.IO.Path.GetFileName(SecurityService.SecurityImage));
         }
 
         public ActionResult UserRecord(Guid Model)
         {
-            User toView = this.UserRepository.Find(Model) ?? Users.Guest;
+            User toView = UserRepository.Find(Model) ?? Users.Guest;
 
-            return this.View("UserRecord", toView);
+            return View("UserRecord", toView);
         }
     }
 }

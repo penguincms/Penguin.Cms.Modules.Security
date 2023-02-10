@@ -24,13 +24,13 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
         public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, IUserSession userSession, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, userSession, messageBus)
         {
-            this.EntityPermissionsRepository = entityPermissionsRepository;
+            EntityPermissionsRepository = entityPermissionsRepository;
         }
 
         [HttpPost]
         public virtual ActionResult AddPermissionsGet(AddPermisionsPageModel model)
         {
-            return this.View(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -41,17 +41,17 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            IRepository<SecurityGroup> securityGroupRepository = this.ServiceProvider.GetService<IRepository<SecurityGroup>>();
+            IRepository<SecurityGroup> securityGroupRepository = ServiceProvider.GetService<IRepository<SecurityGroup>>();
 
             foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
             {
                 Type repositoryType = typeof(IEntityRepository<>).MakeGenericType(t);
 
-                IEntityRepository permissionableEntityRepository = (IEntityRepository)this.ServiceProvider.GetService(repositoryType);
+                IEntityRepository permissionableEntityRepository = (IEntityRepository)ServiceProvider.GetService(repositoryType);
 
                 using IWriteContext context = permissionableEntityRepository.WriteContext();
 
-                IEnumerable Targets = permissionableEntityRepository.FindRange(model.Guids.Select(g => Guid.Parse(g)));
+                IEnumerable Targets = permissionableEntityRepository.FindRange(model.Guids.Select(Guid.Parse));
 
                 List<SecurityGroup> Groups = securityGroupRepository.FindRange(model.SecurityGroups.Select(g => g.Guid).ToArray()).ToList();
 
@@ -64,12 +64,12 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
                     foreach (SecurityGroup group in Groups)
                     {
-                        this.EntityPermissionsRepository.AddPermission(target, group, model.TypeToAdd);
+                        EntityPermissionsRepository.AddPermission(target, group, model.TypeToAdd);
                     }
                 }
             }
 
-            return this.Content("Permissions successfully added");
+            return Content("Permissions successfully added");
         }
     }
 }

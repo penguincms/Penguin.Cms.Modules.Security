@@ -13,7 +13,7 @@
             <summary>
             Executes the action filter against the provided filter context
             </summary>
-            <param name="filterContext">The filter context to execture against</param>
+            <param name="context">The filter context to execture against</param>
         </member>
         <member name="P:Penguin.Cms.Modules.Security.Services.SecurityService.SecurityImage">
             <summary>

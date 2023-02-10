@@ -38,22 +38,22 @@ namespace Penguin.Cms.Modules.Security.Services
             public bool Try { get; set; }
         }
 
-        public UserService(UserSession userSession, UserRepository userRepository, IRepository<Role> roleRepository, IProvideConfigurations configurationService, IRepository<AuthenticationToken> authenticationTokenRepository, ISendTemplates emailTemplateRepository = null, MessageBus? messageBus = null) : base(userRepository, emailTemplateRepository, authenticationTokenRepository)
+        public UserService(UserSession userSession, UserRepository userRepository, IRepository<Role> roleRepository, IProvideConfigurations configurationService, IRepository<AuthenticationToken> authenticationTokenRepository, ISendTemplates? emailTemplateRepository = null, MessageBus? messageBus = null) : base(userRepository, emailTemplateRepository, authenticationTokenRepository)
         {
-            this.UserSession = userSession;
-            this.UserRepository = userRepository;
-            this.RoleRepository = roleRepository;
-            this.ConfigurationService = configurationService;
-            this.MessageBus = messageBus;
+            UserSession = userSession;
+            UserRepository = userRepository;
+            RoleRepository = roleRepository;
+            ConfigurationService = configurationService;
+            MessageBus = messageBus;
         }
 
         public User? Login(AuthenticationToken authenticationToken)
         {
-            User tokenUser = this.GetByAuthenticationToken(authenticationToken);
+            User tokenUser = GetByAuthenticationToken(authenticationToken);
 
             if (tokenUser != null)
             {
-                this.UserSession.LoggedInUser = tokenUser;
+                UserSession.LoggedInUser = tokenUser;
             }
 
             return tokenUser;
@@ -64,16 +64,16 @@ namespace Penguin.Cms.Modules.Security.Services
             User? toReturn = null;
 
             StaticLogger.Log($"{Login}: Getting Domain Name");
-            LoginModel loginModel = new LoginModel(Login, Password, this.ConfigurationService.GetConfiguration(ConfigurationNames.DOMAIN_NAME));
+            LoginModel loginModel = new(Login, Password, ConfigurationService.GetConfiguration(ConfigurationNames.DOMAIN_NAME));
 
             StaticLogger.Log($"{Login}: Checking Database...");
-            if (!this.UserRepository.Where(u => u.ExternalId == Login).Any())
+            if (!UserRepository.Where(u => u.ExternalId == Login).Any())
             {
                 StaticLogger.Log($"{Login}: Does not exist in database");
                 loginModel.InDatabase = false;
 
                 StaticLogger.Log($"{Login}: Checking for automatic user registration");
-                if (this.ConfigurationService.GetBool(ConfigurationNames.AUTOMATIC_USER_REGISTRATION))
+                if (ConfigurationService.GetBool(ConfigurationNames.AUTOMATIC_USER_REGISTRATION))
                 {
                     loginModel.RequiresSave = true;
                 }
@@ -81,11 +81,11 @@ namespace Penguin.Cms.Modules.Security.Services
             else
             {
                 StaticLogger.Log($"{Login}: Exists in database");
-                loginModel.ThisUser = this.UserRepository.Find(loginModel.Login);
+                loginModel.ThisUser = UserRepository.Find(loginModel.Login);
                 loginModel.InDatabase = true;
             }
 
-            if (string.Equals(loginModel.Login, Users.Admin.Login, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(loginModel.Login, Users.Admin.Login, StringComparison.OrdinalIgnoreCase))
             {
                 loginModel.LocalValidation.Try = true;
                 loginModel.DomainValidation.Try = false;
@@ -94,16 +94,16 @@ namespace Penguin.Cms.Modules.Security.Services
             else
             {
                 StaticLogger.Log($"{Login}: Checking login providers...");
-                loginModel.OwaValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.OWA_LOGIN);
-                loginModel.ExchangeValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.EXCHANGE_LOGIN);
-                loginModel.DomainValidation.Try = this.ConfigurationService.GetBool(ConfigurationNames.DOMAIN_LOGIN);
-                loginModel.LocalValidation.Try = !this.ConfigurationService.GetBool(ConfigurationNames.DISABLE_LOCAL_LOGIN);
+                loginModel.OwaValidation.Try = ConfigurationService.GetBool(ConfigurationNames.OWA_LOGIN);
+                loginModel.ExchangeValidation.Try = ConfigurationService.GetBool(ConfigurationNames.EXCHANGE_LOGIN);
+                loginModel.DomainValidation.Try = ConfigurationService.GetBool(ConfigurationNames.DOMAIN_LOGIN);
+                loginModel.LocalValidation.Try = !ConfigurationService.GetBool(ConfigurationNames.DISABLE_LOCAL_LOGIN);
             }
             //The order here actually matters
             if (loginModel.LocalValidation.Try)
             {
                 StaticLogger.Log($"{Login}: Trying local");
-                this.LocalLogin(loginModel);
+                LocalLogin(loginModel);
             }
 
             if (loginModel.OwaValidation.Try)
@@ -151,16 +151,13 @@ namespace Penguin.Cms.Modules.Security.Services
             if (loginModel.IsValidated)
             {
                 StaticLogger.Log($"{Login}: Found valid login. Opening write context");
-                using (this.UserRepository.WriteContext())
+                using (UserRepository.WriteContext())
                 {
-                    if (loginModel.ThisUser is null)
+                    loginModel.ThisUser ??= new User
                     {
-                        loginModel.ThisUser = new User
-                        {
-                            Login = loginModel.Login,
-                            Password = loginModel.Password
-                        };
-                    }
+                        Login = loginModel.Login,
+                        Password = loginModel.Password
+                    };
 
                     StaticLogger.Log($"{Login}: Updating Email");
                     UpdateEmail(loginModel);
@@ -169,7 +166,7 @@ namespace Penguin.Cms.Modules.Security.Services
                     UpdatePersonal(loginModel);
 
                     StaticLogger.Log($"{Login}: Updating roles");
-                    this.UpdateRoles(loginModel);
+                    UpdateRoles(loginModel);
 
                     if (loginModel.RequiresSave)
                     {
@@ -182,18 +179,18 @@ namespace Penguin.Cms.Modules.Security.Services
                         }
 
                         StaticLogger.Log($"{Login}: Saving user");
-                        this.UserRepository.AddOrUpdate(loginModel.ThisUser);
+                        UserRepository.AddOrUpdate(loginModel.ThisUser);
                     }
                 }
 
                 StaticLogger.Log($"{Login}: Setting return value");
-                toReturn = this.UserRepository.Find(Login);
+                toReturn = UserRepository.Find(Login);
             }
 
             if (toReturn != null)
             {
                 StaticLogger.Log($"{Login}: Setting session user...");
-                this.UserSession.LoggedInUser = toReturn;
+                UserSession.LoggedInUser = toReturn;
             }
 
             return toReturn;
@@ -207,16 +204,16 @@ namespace Penguin.Cms.Modules.Security.Services
             {
                 Guid Token = Guid.NewGuid();
 
-                using (this.AuthenticationTokenRepository.WriteContext())
+                using (AuthenticationTokenRepository.WriteContext())
                 {
                     token = new AuthenticationToken()
                     {
                         Expiration = DateTime.Now.AddMinutes(expirationMinutes),
-                        User = this.UserRepository.Find(targetUser._Id).Guid,
+                        User = UserRepository.Find(targetUser._Id).Guid,
                         Guid = Token
                     };
 
-                    this.AuthenticationTokenRepository.AddOrUpdate(token);
+                    AuthenticationTokenRepository.AddOrUpdate(token);
                 }
             }
             else
@@ -248,9 +245,9 @@ namespace Penguin.Cms.Modules.Security.Services
             }
             else if (loginModel.OwaValidation.Succeeded && loginModel.DomainValidation.Attempted && !loginModel.DomainValidation.Succeeded)
             {
-                using DirectoryEntry entry = new DirectoryEntry();
+                using DirectoryEntry entry = new();
                 // get a DirectorySearcher object
-                using DirectorySearcher search = new DirectorySearcher(entry)
+                using DirectorySearcher search = new(entry)
                 {
                     // specify the search filter
                     Filter = "(&(objectClass=user)(mail=" + loginModel.AuthenticationEmail + "))"
@@ -279,7 +276,7 @@ namespace Penguin.Cms.Modules.Security.Services
         {
             try
             {
-                using PrincipalContext context = new PrincipalContext(ContextType.Domain);
+                using PrincipalContext context = new(ContextType.Domain);
                 return context.ValidateCredentials(UserName, Password);
             }
             catch (Exception ex)
@@ -294,7 +291,7 @@ namespace Penguin.Cms.Modules.Security.Services
         {
             try
             {
-                OWAValidator auth = new OWAValidator();
+                OWAValidator auth = new();
 
                 return auth.Validate(UserName, Password);
             }
@@ -328,9 +325,9 @@ namespace Penguin.Cms.Modules.Security.Services
             }
             else if (loginModel.DomainValidation.Succeeded)
             {
-                using DirectoryEntry entry = new DirectoryEntry();
+                using DirectoryEntry entry = new();
                 // get a DirectorySearcher object
-                using DirectorySearcher search = new DirectorySearcher(entry)
+                using DirectorySearcher search = new(entry)
                 {
                     // specify the search filter
                     Filter = "(&(objectClass=user)(anr=" + loginModel.Login + "))"
@@ -372,9 +369,9 @@ namespace Penguin.Cms.Modules.Security.Services
 
                 if (!string.IsNullOrWhiteSpace(DomainLogin))
                 {
-                    using DirectoryEntry entry = new DirectoryEntry();
+                    using DirectoryEntry entry = new();
                     // get a DirectorySearcher object
-                    using DirectorySearcher search = new DirectorySearcher(entry)
+                    using DirectorySearcher search = new(entry)
                     {
                         // specify the search filter
                         Filter = "(&(objectClass=user)(anr=" + DomainLogin + "))"
@@ -417,7 +414,7 @@ namespace Penguin.Cms.Modules.Security.Services
 
             string HashedPassword = loginModel.Password.ComputeSha512Hash();
 
-            loginModel.LocalValidation.Succeeded = this.UserRepository.Any(u => u.ExternalId == loginModel.Login && u.HashedPassword == HashedPassword);
+            loginModel.LocalValidation.Succeeded = UserRepository.Any(u => u.ExternalId == loginModel.Login && u.HashedPassword == HashedPassword);
         }
 
         private void UpdateRoles(LoginModel loginModel)
@@ -436,19 +433,19 @@ namespace Penguin.Cms.Modules.Security.Services
 
             if (!string.IsNullOrEmpty(DomainLogin))
             {
-                using PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+                using PrincipalContext ctx = new(ContextType.Domain);
                 // find a user
                 UserPrincipal user = UserPrincipal.FindByIdentity(ctx, DomainLogin);
 
                 if (user != null)
                 {
-                    List<Role> newRoles = new List<Role>();
+                    List<Role> newRoles = new();
                     // get the authorization groups - those are the "roles"
                     PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
 
                     foreach (Principal principal in groups)
                     {
-                        newRoles.Add(this.RoleRepository.CreateIfNotExists(principal.Name, principal.Description, SecurityGroup.SecurityGroupSource.ActiveDirectory));
+                        newRoles.Add(RoleRepository.CreateIfNotExists(principal.Name, principal.Description, SecurityGroup.SecurityGroupSource.ActiveDirectory));
                     }
 
                     if (!loginModel.ThisUser.Roles.Where(r => r.Source == SecurityGroup.SecurityGroupSource.ActiveDirectory).SequenceEqual(newRoles))

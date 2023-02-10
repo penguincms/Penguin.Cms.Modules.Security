@@ -11,12 +11,12 @@ namespace Penguin.Cms.Modules.Security.ViewComponents
 
         public UserRecord(UserRepository userRepository)
         {
-            this.UserRepository = userRepository;
+            UserRepository = userRepository;
         }
 
         public IViewComponentResult Invoke(Guid Model)
         {
-            return this.View("~/Views/Security/UserRecord.cshtml", this.UserRepository.Find(Model) ?? Users.Guest);
+            return View("~/Views/Security/UserRecord.cshtml", UserRepository.Find(Model) ?? Users.Guest);
         }
     }
 }

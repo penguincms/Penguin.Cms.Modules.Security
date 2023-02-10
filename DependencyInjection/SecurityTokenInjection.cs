@@ -21,7 +21,7 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
 
             serviceRegister.Register((IServiceProvider ServiceProvider) =>
             {
-                CookieOptions option = new CookieOptions
+                CookieOptions option = new()
                 {
                     Expires = DateTime.Now.AddDays(-10)
                 };
@@ -30,7 +30,7 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
 
                 ISession session = context.Session;
 
-                TeaEncryptor tea = new TeaEncryptor(session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
+                TeaEncryptor tea = new(session.Get(SecurityService.SECURITY_TOKEN_PASSWORD_NAME));
 
                 string fingerPrintJson = tea.Decrypt(context.Request.Cookies["X-Session"]);
 

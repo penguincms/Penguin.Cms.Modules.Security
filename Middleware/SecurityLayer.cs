@@ -13,7 +13,7 @@ namespace Penguin.Cms.Modules.Security.Middleware
         //TODO: Learn what this is
         public SecurityLayer(RequestDelegate next)
         {
-            this._next = next;
+            _next = next;
         }
 
         public async Task Invoke(HttpContext context)
@@ -30,7 +30,7 @@ namespace Penguin.Cms.Modules.Security.Middleware
                 context.Request.Path = "/Security/Image";
             }
 
-            await this._next(context).ConfigureAwait(true);
+            await _next(context).ConfigureAwait(true);
         }
     }
 }

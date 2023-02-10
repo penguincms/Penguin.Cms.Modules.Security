@@ -32,8 +32,8 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            IRepository<SecurityGroup> securityGroupRepository = this.ServiceProvider.GetService<IRepository<SecurityGroup>>();
-            List<SecurityGroup> ToDisplay = new List<SecurityGroup>();
+            IRepository<SecurityGroup> securityGroupRepository = ServiceProvider.GetService<IRepository<SecurityGroup>>();
+            List<SecurityGroup> ToDisplay = new();
 
             foreach (IMetaObject o in model.CollectionItems)
             {
@@ -47,18 +47,18 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
             model = new MetaObjectHolder(ToDisplay);
 
-            InputListPageModel pageModel = new InputListPageModel(model, nameof(SecurityGroup.ExternalId), nameof(SecurityGroup.Guid), Urls.SEARCH);
+            InputListPageModel pageModel = new(model, nameof(SecurityGroup.ExternalId), nameof(SecurityGroup.Guid), Urls.SEARCH);
 
-            return this.View("InputList", pageModel);
+            return View("InputList", pageModel);
         }
 
         [RequiresRole(RoleNames.USER_MANAGER)]
         [DynamicHandler(DisplayContexts.Edit, typeof(List<Group>), typeof(List<Role>))]
         public ActionResult SecurityGroupSelector(IMetaObject model)
         {
-            InputListPageModel pageModel = new InputListPageModel(model, nameof(SecurityGroup.ExternalId), nameof(SecurityGroup.Guid), Urls.SEARCH);
+            InputListPageModel pageModel = new(model, nameof(SecurityGroup.ExternalId), nameof(SecurityGroup.Guid), Urls.SEARCH);
 
-            return this.View("InputList", pageModel);
+            return View("InputList", pageModel);
         }
     }
 }

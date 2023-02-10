@@ -18,8 +18,8 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
 
         public ViewModuleProvider(EntityPermissionsRepository entityPermissionsRepository, PermissionableEntitySecurityProvider permissionableEntitySecurityProvider)
         {
-            this.PermissionableEntitySecurityProvider = permissionableEntitySecurityProvider;
-            this.EntityPermissionsRepository = entityPermissionsRepository;
+            PermissionableEntitySecurityProvider = permissionableEntitySecurityProvider;
+            EntityPermissionsRepository = entityPermissionsRepository;
         }
 
         public IEnumerable<ViewModule> GetComponents(Entity Id)
@@ -29,16 +29,13 @@ namespace Penguin.Cms.Modules.Security.ComponentProviders
                 throw new System.ArgumentNullException(nameof(Id));
             }
 
-            EntityPermissions permissions = this.EntityPermissionsRepository.GetForEntity(Id);
+            EntityPermissions permissions = EntityPermissionsRepository.GetForEntity(Id);
 
-            if (permissions is null)
+            permissions ??= new EntityPermissions()
             {
-                permissions = new EntityPermissions()
-                {
-                    EntityGuid = Id.Guid,
-                    Permissions = this.PermissionableEntitySecurityProvider.GetDefaultPermissions().ToList()
-                };
-            }
+                EntityGuid = Id.Guid,
+                Permissions = PermissionableEntitySecurityProvider.GetDefaultPermissions().ToList()
+            };
 
             IMetaObject m = new MetaObjectHolder(permissions);
 

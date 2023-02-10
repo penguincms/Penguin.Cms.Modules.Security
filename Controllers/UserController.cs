@@ -24,9 +24,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
 {
     public partial class UserController : Controller
     {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public const string BAD_AUTHENTICATION_TOKEN = "BadAuthenticationToken";
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
         protected IProvideConfigurations ConfigurationService { get; set; }
         protected EmailValidationRepository EmailValidationRepository { get; set; }
@@ -37,28 +35,28 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         public UserController(IProvideConfigurations configurationService, UserSession userSession, UserRepository userRepository, UserService userService, EmailValidationRepository emailValidationRepository, MessageBus? messageBus = null)
         {
-            this.UserRepository = userRepository;
-            this.EmailValidationRepository = emailValidationRepository;
-            this.UserService = userService;
-            this.ConfigurationService = configurationService;
-            this.MessageBus = messageBus;
-            this.UserSession = userSession;
+            UserRepository = userRepository;
+            EmailValidationRepository = emailValidationRepository;
+            UserService = userService;
+            ConfigurationService = configurationService;
+            MessageBus = messageBus;
+            UserSession = userSession;
         }
 
         public ActionResult Authenticate(Guid UserId, Guid Token, string ReturnUrl)
         {
-            User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
+            User? user = UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
             return user == null ?
-                this.View(BAD_AUTHENTICATION_TOKEN) :
-                (ActionResult)this.Redirect(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/");
+                View(BAD_AUTHENTICATION_TOKEN) :
+                Redirect(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/");
         }
 
         [LoggedIn]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ChangePassword()
         {
-            return this.View("ChangePassword");
+            return View("ChangePassword");
         }
 
         [HttpPost]
@@ -71,86 +69,86 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 model.NewPassword = string.Empty;
                 model.ConfirmNewPassword = string.Empty;
-                return this.View(model);
+                return View(model);
             }
 
-            using (IWriteContext context = this.UserRepository.WriteContext())
+            using (IWriteContext context = UserRepository.WriteContext())
             {
-                User toUpdate = this.UserRepository.Find(this.UserSession.LoggedInUser._Id);
+                User toUpdate = UserRepository.Find(UserSession.LoggedInUser._Id);
 
                 toUpdate.Password = model.NewPassword;
             }
 
-            return this.View("ChangePasswordSuccess");
+            return View("ChangePasswordSuccess");
         }
 
         public ActionResult EmailValidationRequired(string Id)
         {
-            return this.View((object)Id);
+            return View((object)Id);
         }
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ForgotLogin(string Email)
         {
-            this.UserService.SendLoginInformation(Email);
+            UserService.SendLoginInformation(Email);
 
-            return this.View("SentLogin");
+            return View("SentLogin");
         }
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ForgotLogin()
         {
-            return this.View();
+            return View();
         }
 
         [HttpPost]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ForgotPassword(string login)
         {
-            _ = this.UserService.RequestPasswordReset(login);
+            _ = UserService.RequestPasswordReset(login);
 
-            return this.View("SentPassword");
+            return View("SentPassword");
         }
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ForgotPassword()
         {
-            return this.View();
+            return View();
         }
 
         public ActionResult GenerateEmailValidation(string Id)
         {
-            using (IWriteContext context = this.EmailValidationRepository.WriteContext())
+            using (IWriteContext context = EmailValidationRepository.WriteContext())
             {
-                this.EmailValidationRepository.GenerateToken(Guid.Parse(Id), this.GetEmailValidationLink());
+                EmailValidationRepository.GenerateToken(Guid.Parse(Id), GetEmailValidationLink());
             }
 
-            return this.View();
+            return View();
         }
 
         [HandleException(typeof(NotLoggedInException))]
         public ActionResult Login(string? Url = null)
         {
-            if (!this.UserRepository.Any())
+            if (!UserRepository.Any())
             {
-                if (this.MessageBus is null)
+                if (MessageBus is null)
                 {
                     throw new NullReferenceException("Can not send security group setup message to null messagebus");
                 }
 
-                this.MessageBus.Send(new Setup<SecurityGroup>());
+                MessageBus.Send(new Setup<SecurityGroup>());
             }
 
-            Url ??= this.Request.Headers["Referer"].ToString() ?? "";
+            Url ??= Request.Headers["Referer"].ToString() ?? "";
 
-            return this.View(new LoginPageModel() { ReturnUrl = Url });
+            return View(new LoginPageModel() { ReturnUrl = Url });
         }
 
         [HttpPost]
@@ -179,58 +177,58 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
 
             StaticLogger.Log($"{model.Login}: Calling user service...", StaticLogger.LoggingLevel.Call);
-            User? user = this.UserService.Login(model.Login, model.Password);
+            User? user = UserService.Login(model.Login, model.Password);
 
             if (user != null)
             {
                 StaticLogger.Log($"{model.Login}: User not null", StaticLogger.LoggingLevel.Call);
-                if (this.ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION))
+                if (ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION))
                 {
-                    if (!this.EmailValidationRepository.IsValidated(user))
+                    if (!EmailValidationRepository.IsValidated(user))
                     {
-                        return this.RedirectToAction(nameof(EmailValidationRequired), new { Id = user.Guid.ToString(), area = "" });
+                        return RedirectToAction(nameof(EmailValidationRequired), new { Id = user.Guid.ToString(), area = "" });
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && model.ReturnUrl != this.Request.Path.Value)
+                if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && model.ReturnUrl != Request.Path.Value)
                 {
                     WaitForRedirect();
                     StaticLogger.Log($"{model.Login}: Returning to {model.ReturnUrl}", StaticLogger.LoggingLevel.Call);
-                    return this.Redirect(model.ReturnUrl);
+                    return Redirect(model.ReturnUrl);
                 }
                 else
                 {
                     WaitForRedirect();
                     StaticLogger.Log($"{model.Login}: Returning Home", StaticLogger.LoggingLevel.Call);
-                    return this.Redirect("/Home/Index");
+                    return Redirect("/Home/Index");
                 }
             }
             else
             {
                 StaticLogger.Log($"{model.Login}: User is null", StaticLogger.LoggingLevel.Call);
-                this.ModelState.AddModelError(string.Empty, "Invalid Login or Password" + System.Environment.NewLine);
+                ModelState.AddModelError(string.Empty, "Invalid Login or Password" + System.Environment.NewLine);
                 WaitForRedirect();
-                return this.View(model);
+                return View(model);
             }
         }
 
         public IActionResult LoginHelp()
         {
-            return this.View();
+            return View();
         }
 
         [LoggedIn]
         public ActionResult LogOut()
         {
-            this.UserSession.LoggedInUser = Users.Guest;
+            UserSession.LoggedInUser = Users.Guest;
 
-            return this.Redirect("/");
+            return Redirect("/");
         }
 
         [RequiresConfiguration(ConfigurationNames.MANUAL_USER_REGISTRATION, true)]
         public ActionResult Register()
         {
-            return this.UserSession.IsLoggedIn ? this.RedirectToAction("Index", "Home", null) : (ActionResult)this.View();
+            return UserSession.IsLoggedIn ? RedirectToAction("Index", "Home", null) : View();
         }
 
         [HttpPost]
@@ -244,27 +242,27 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
             System.Threading.Thread.Sleep(1000);
 
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.View(model);
+                return View(model);
             }
 
-            if (this.UserRepository.GetByLogin(model.Login) != null)
+            if (UserRepository.GetByLogin(model.Login) != null)
             {
-                this.ModelState.AddModelError(string.Empty, "Username is already taken");
-                return this.View(model);
+                ModelState.AddModelError(string.Empty, "Username is already taken");
+                return View(model);
             }
 
-            if (!this.ConfigurationService.GetBool(ConfigurationNames.ALLOW_DUPLICATE_EMAIL) && this.UserRepository.GetByEmail(model.Email) != null)
+            if (!ConfigurationService.GetBool(ConfigurationNames.ALLOW_DUPLICATE_EMAIL) && UserRepository.GetByEmail(model.Email) != null)
             {
-                this.ModelState.AddModelError(string.Empty, "Email is already taken");
-                return this.View(model);
+                ModelState.AddModelError(string.Empty, "Email is already taken");
+                return View(model);
             }
 
-            bool EmailValidationRequired = this.ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION);
+            bool EmailValidationRequired = ConfigurationService.GetBool(ConfigurationNames.REQUIRE_EMAIL_VALIDATION);
             User newUser;
 
-            using (IWriteContext context = this.UserRepository.WriteContext())
+            using (IWriteContext context = UserRepository.WriteContext())
             {
                 newUser = new User()
                 {
@@ -273,26 +271,26 @@ namespace Penguin.Cms.Modules.Security.Controllers
                     Email = model.Email
                 };
 
-                this.UserRepository.AddOrUpdate(newUser);
+                UserRepository.AddOrUpdate(newUser);
 
                 if (EmailValidationRequired)
                 {
-                    this.EmailValidationRepository.GenerateToken(newUser.Guid, this.GetEmailValidationLink());
+                    EmailValidationRepository.GenerateToken(newUser.Guid, GetEmailValidationLink());
                 }
             }
 
             if (!EmailValidationRequired)
             {
-                this.ViewBag.Messages = new List<string>()
+                ViewBag.Messages = new List<string>()
             {
                 "Registration successful. You can now log in with your new account"
             };
 
-                return this.View("Login");
+                return View("Login");
             }
             else
             {
-                return this.RedirectToAction(nameof(EmailValidationRequired), new { Id = newUser.Guid.ToString(), area = "" });
+                return RedirectToAction(nameof(EmailValidationRequired), new { Id = newUser.Guid.ToString(), area = "" });
             }
         }
 
@@ -300,38 +298,48 @@ namespace Penguin.Cms.Modules.Security.Controllers
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ResetPassword(string login)
         {
-            _ = this.UserService.RequestPasswordReset(login);
+            _ = UserService.RequestPasswordReset(login);
 
-            return this.View();
+            return View();
         }
 
         [HttpGet]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ResetPassword(Guid UserId, Guid Token)
         {
-            User? user = this.UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
+            User? user = UserService.Login(new AuthenticationToken() { User = UserId, Guid = Token });
 
-            return user == null ? this.View(BAD_AUTHENTICATION_TOKEN) : (ActionResult)this.Redirect("ChangePassword");
+            return user == null ? View(BAD_AUTHENTICATION_TOKEN) : Redirect("ChangePassword");
         }
 
         public ActionResult ValidateEmail(string Id)
         {
-            if (this.EmailValidationRepository.IsTokenExpired(Guid.Parse(Id)))
+            if (EmailValidationRepository.IsTokenExpired(Guid.Parse(Id)))
             {
-                return this.View("ValidationTokenExpired");
+                return View("ValidationTokenExpired");
             }
 
-            using (IWriteContext context = this.EmailValidationRepository.WriteContext())
+            using (IWriteContext context = EmailValidationRepository.WriteContext())
             {
-                _ = this.EmailValidationRepository.ValidateToken(Guid.Parse(Id));
+                _ = EmailValidationRepository.ValidateToken(Guid.Parse(Id));
             }
 
-            return this.View();
+            return View();
         }
 
         private string GetEmailValidationLink()
         {
-            return $"{new Uri(this.Request.Path).Scheme}://{new Uri(this.Request.Path).Authority}{this.Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
+            return $"{new Uri(Request.Path).Scheme}://{new Uri(Request.Path).Authority}{Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
+        }
+
+        public ActionResult Authenticate(Guid UserId, Guid Token, Uri ReturnUrl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult Login(Uri Url)
+        {
+            throw new NotImplementedException();
         }
     }
 }

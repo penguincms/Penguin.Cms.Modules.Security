@@ -19,18 +19,18 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
         public ProfileController(IRepository<UserProfile> profileRepository, UserRepository userRepository, UserSession userSession)
         {
-            this.ProfileRepository = profileRepository;
-            this.UserRepository = userRepository;
-            this.UserSession = userSession;
+            ProfileRepository = profileRepository;
+            UserRepository = userRepository;
+            UserSession = userSession;
         }
 
         [LoggedIn]
         [HttpGet]
         public ActionResult Edit()
         {
-            UserProfile? model = this.ProfileRepository.GetByLogin(this.UserSession.LoggedInUser.Login)?.GetData<UserProfile>();
+            UserProfile? model = ProfileRepository.GetByLogin(UserSession.LoggedInUser.Login)?.GetData<UserProfile>();
 
-            return model is null ? throw new Exception("User profile not found") : this.View(model);
+            return model is null ? throw new Exception("User profile not found") : View(model);
         }
 
         [HttpPost]
@@ -42,13 +42,13 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 throw new ArgumentNullException(nameof(model));
             }
 
-            using (IWriteContext context = this.ProfileRepository.WriteContext())
+            using (IWriteContext context = ProfileRepository.WriteContext())
             {
-                UserProfile existing = this.ProfileRepository.GetByLogin(this.UserSession.LoggedInUser.Login);
+                UserProfile existing = ProfileRepository.GetByLogin(UserSession.LoggedInUser.Login);
 
-                if (!(existing is null))
+                if (existing is not null)
                 {
-                    model.User = this.UserSession.LoggedInUser;
+                    model.User = UserSession.LoggedInUser;
 
                     existing.SetData(model);
                 }
@@ -56,17 +56,17 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 {
                     existing = new UserProfile();
 
-                    model.User = this.UserSession.LoggedInUser;
+                    model.User = UserSession.LoggedInUser;
 
-                    existing.User = this.UserRepository.Find(this.UserSession.LoggedInUser._Id);
+                    existing.User = UserRepository.Find(UserSession.LoggedInUser._Id);
 
                     existing.SetData(model);
                 }
 
-                this.ProfileRepository.AddOrUpdate(existing);
+                ProfileRepository.AddOrUpdate(existing);
             }
 
-            return this.RedirectToAction(nameof(V), new { area = "" });
+            return RedirectToAction(nameof(V), new { area = "" });
         }
 
         public ActionResult V(string Username)
@@ -75,30 +75,27 @@ namespace Penguin.Cms.Modules.Security.Controllers
 
             if (string.IsNullOrWhiteSpace(Username))
             {
-                if (this.UserSession.IsLoggedIn)
+                if (UserSession.IsLoggedIn)
                 {
-                    profile = this.ProfileRepository.GetByLogin(this.UserSession.LoggedInUser?.Login)?.GetData<UserProfile>();
+                    profile = ProfileRepository.GetByLogin(UserSession.LoggedInUser?.Login)?.GetData<UserProfile>();
 
-                    if (!(profile is null))
+                    if (profile is not null)
                     {
-                        profile.User = this.UserSession.LoggedInUser;
+                        profile.User = UserSession.LoggedInUser;
                     }
                 }
             }
             else
             {
-                profile = this.ProfileRepository.GetByLogin(Username)?.GetData<UserProfile>();
+                profile = ProfileRepository.GetByLogin(Username)?.GetData<UserProfile>();
             }
 
-            if (profile is null)
+            profile ??= new UserProfile
             {
-                profile = new UserProfile
-                {
-                    User = this.UserRepository.GetByLogin(Username)
-                };
-            }
+                User = UserRepository.GetByLogin(Username)
+            };
 
-            return this.View(profile);
+            return View(profile);
         }
     }
 }
