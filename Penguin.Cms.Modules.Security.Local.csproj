@@ -14,7 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.7" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.4" />
     <ProjectReference Include="..\Penguin.Auditing.Abstractions\Penguin.Auditing.Abstractions.Local.csproj" />
     <ProjectReference Include="..\Penguin.Authentication.Abstractions\Penguin.Authentication.Abstractions.Local.csproj" />
     <ProjectReference Include="..\Penguin.Authentication.Exchange\Penguin.Authentication.Exchange.Local.csproj" />
@@ -86,8 +86,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="5.0.0" />
+    <PackageReference Include="System.DirectoryServices" Version="7.0.1" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
   </ItemGroup>
   <Import Project="Penguin.Projects.Shared\Penguin.Projects.Shared.csproj" />
 </Project>
