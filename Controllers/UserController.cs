@@ -57,6 +57,11 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 Redirect(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/");
         }
 
+        public ActionResult Authenticate(Guid UserId, Guid Token, Uri ReturnUrl)
+        {
+            throw new NotImplementedException();
+        }
+
         [LoggedIn]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ChangePassword()
@@ -217,6 +222,11 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
         }
 
+        public ActionResult Login(Uri Url)
+        {
+            throw new NotImplementedException();
+        }
+
         public IActionResult LoginHelp()
         {
             return View();
@@ -335,16 +345,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
         private string GetEmailValidationLink()
         {
             return $"{new Uri(Request.Path).Scheme}://{new Uri(Request.Path).Authority}{Url.Content("~")}/User/{nameof(ValidateEmail)}/{{0}}";
-        }
-
-        public ActionResult Authenticate(Guid UserId, Guid Token, Uri ReturnUrl)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActionResult Login(Uri Url)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Loxifi;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Penguin.Cms.Entities;
@@ -20,6 +21,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 {
     public class DynamicSecurityController : DynamicController
     {
+        static TypeFactory TypeFactory { get; set; } = new TypeFactory(new TypeFactorySettings());
         protected EntityPermissionsRepository EntityPermissionsRepository { get; set; }
 
         public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, IUserSession userSession, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, userSession, messageBus)

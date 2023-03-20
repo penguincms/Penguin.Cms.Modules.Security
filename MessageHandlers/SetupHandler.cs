@@ -1,4 +1,5 @@
-﻿using Penguin.Cms.Core.Services;
+﻿using Loxifi;
+using Penguin.Cms.Core.Services;
 using Penguin.Cms.Entities;
 using Penguin.Cms.Modules.Security.SecurityProviders;
 using Penguin.Cms.Repositories.Interfaces;
@@ -21,6 +22,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 {
     public class SetupHandler : IMessageHandler<Setup<SecurityGroup>>
     {
+        private static TypeFactory TypeFactory { get; set; } = new TypeFactory(new TypeFactorySettings());
         protected ComponentService ComponentService { get; set; }
 
         protected IEntityRepository<Group> GroupRepository { get; set; }

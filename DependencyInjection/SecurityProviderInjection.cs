@@ -1,4 +1,5 @@
-﻿using Penguin.Cms.Entities;
+﻿using Loxifi;
+using Penguin.Cms.Entities;
 using Penguin.Cms.Modules.Security.SecurityProviders;
 using Penguin.DependencyInjection.Abstractions.Enums;
 using Penguin.DependencyInjection.Abstractions.Interfaces;
@@ -10,6 +11,7 @@ namespace Penguin.Cms.Modules.Security.DependencyInjection
 {
     public class SecurityProviderInjection : IRegisterDependencies
     {
+        private TypeFactory TypeFactory { get; set; } = new TypeFactory(new TypeFactorySettings());
         public void RegisterDependencies(IServiceRegister serviceRegister)
         {
             if (serviceRegister is null)

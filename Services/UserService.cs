@@ -23,14 +23,6 @@ namespace Penguin.Cms.Modules.Security.Services
 {
     public partial class UserService : Penguin.Cms.Security.Services.UserService
     {
-        protected IProvideConfigurations ConfigurationService { get; set; }
-
-        protected MessageBus? MessageBus { get; set; }
-
-        protected IRepository<Role> RoleRepository { get; set; }
-
-        protected UserSession UserSession { get; set; }
-
         private class Validation
         {
             public bool Attempted { get; set; }
@@ -39,6 +31,14 @@ namespace Penguin.Cms.Modules.Security.Services
 
             public bool Try { get; set; }
         }
+
+        protected IProvideConfigurations ConfigurationService { get; set; }
+
+        protected MessageBus? MessageBus { get; set; }
+
+        protected IRepository<Role> RoleRepository { get; set; }
+
+        protected UserSession UserSession { get; set; }
 
         public UserService(UserSession userSession, UserRepository userRepository, IRepository<Role> roleRepository, IProvideConfigurations configurationService, IRepository<AuthenticationToken> authenticationTokenRepository, ISendTemplates? emailTemplateRepository = null, MessageBus? messageBus = null) : base(userRepository, emailTemplateRepository, authenticationTokenRepository)
         {
@@ -155,11 +155,18 @@ namespace Penguin.Cms.Modules.Security.Services
                 StaticLogger.Log($"{Login}: Found valid login. Opening write context");
                 using (UserRepository.WriteContext())
                 {
-                    loginModel.ThisUser ??= new User
+                    if (loginModel.ThisUser is null)
                     {
-                        Login = loginModel.Login,
-                        Password = loginModel.Password
-                    };
+                        loginModel.ThisUser = new User
+                        {
+                            Login = loginModel.Login,
+                            Password = loginModel.Password
+                        };
+                    } else
+                    {
+                        loginModel.ThisUser = UserRepository.Find(Login);
+                    }
+
 
                     StaticLogger.Log($"{Login}: Updating Email");
                     UpdateEmail(loginModel);

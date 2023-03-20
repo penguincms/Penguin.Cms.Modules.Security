@@ -6,9 +6,13 @@ namespace Penguin.Cms.Modules.Security.Services
     public class SecurityService : ISelfRegistering
     {
         public const int DUMMY_FILE_LENGTH = 178000;
+
         public const string IMAGE_ROOT = "/Images/Client/";
+
         public const int PASSWORD_LENGTH = 16;
+
         public const string SECURITY_TOKEN_NAME = "SecurityToken";
+
         public const string SECURITY_TOKEN_PASSWORD_NAME = "SecurityTokenPassword";
 
         /// <summary>
