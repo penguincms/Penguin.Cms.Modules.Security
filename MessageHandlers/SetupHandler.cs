@@ -22,7 +22,6 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
 {
     public class SetupHandler : IMessageHandler<Setup<SecurityGroup>>
     {
-        private static TypeFactory TypeFactory { get; set; } = new TypeFactory(new TypeFactorySettings());
         protected ComponentService ComponentService { get; set; }
 
         protected IEntityRepository<Group> GroupRepository { get; set; }
@@ -62,7 +61,7 @@ namespace Penguin.Cms.Modules.Security.MessageHandlers
                     }
                 }
 
-                foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
+                foreach (Type t in TypeFactory.Default.GetDerivedTypes(typeof(Entity)))
                 {
                     _ = RoleRepository.CreateIfNotExists(t.Name, $"Grants permissions to all entities with the name {t.Name}");
                 }

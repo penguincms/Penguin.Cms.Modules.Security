@@ -21,7 +21,6 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 {
     public class DynamicSecurityController : DynamicController
     {
-        static TypeFactory TypeFactory { get; set; } = new TypeFactory(new TypeFactorySettings());
         protected EntityPermissionsRepository EntityPermissionsRepository { get; set; }
 
         public DynamicSecurityController(IServiceProvider serviceProvider, IFileProvider fileProvider, EntityPermissionsRepository entityPermissionsRepository, IRepository<AuditableError> errorRepository, IUserSession userSession, Penguin.Messaging.Core.MessageBus? messageBus = null) : base(serviceProvider, fileProvider, errorRepository, userSession, messageBus)
@@ -45,7 +44,7 @@ namespace Penguin.Cms.Modules.Security.Areas.Admin.Controllers
 
             IRepository<SecurityGroup> securityGroupRepository = ServiceProvider.GetService<IRepository<SecurityGroup>>();
 
-            foreach (Type t in TypeFactory.GetDerivedTypes(typeof(Entity)))
+            foreach (Type t in TypeFactory.Default.GetDerivedTypes(typeof(Entity)))
             {
                 Type repositoryType = typeof(IEntityRepository<>).MakeGenericType(t);
 
