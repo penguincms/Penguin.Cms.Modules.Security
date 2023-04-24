@@ -57,11 +57,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 Redirect(!string.IsNullOrWhiteSpace(ReturnUrl) ? ReturnUrl : "/");
         }
 
-        public ActionResult Authenticate(Guid UserId, Guid Token, Uri ReturnUrl)
-        {
-            throw new NotImplementedException();
-        }
-
         [LoggedIn]
         [RequiresConfiguration(ConfigurationNames.DISABLE_LOCAL_LOGIN, false)]
         public ActionResult ChangePassword()
@@ -220,11 +215,6 @@ namespace Penguin.Cms.Modules.Security.Controllers
                 WaitForRedirect();
                 return View(model);
             }
-        }
-
-        public ActionResult Login(Uri Url)
-        {
-            throw new NotImplementedException();
         }
 
         public IActionResult LoginHelp()
