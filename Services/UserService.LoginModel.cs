@@ -1,5 +1,7 @@
 ﻿using Penguin.Cms.Security;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Penguin.Cms.Modules.Security.Services
 {
@@ -29,36 +31,26 @@ namespace Penguin.Cms.Modules.Security.Services
 
             public string Domain { get; set; }
 
-            public Validation DomainValidation { get; set; }
-
-            public Validation ExchangeValidation { get; set; }
+            public List<Validation> Validations { get; } = new List<Validation>();
 
             public bool InDatabase { get; set; }
 
-            public bool IsValidated => OwaValidation.Succeeded || DomainValidation.Succeeded || LocalValidation.Succeeded || ExchangeValidation.Succeeded;
-
-            public Validation LocalValidation { get; set; }
+            public bool IsValidated => Validations.Any(v => v.Succeeded);
 
             public string Login { get; set; }
-
-            public Validation OwaValidation { get; set; }
 
             public string Password { get; set; }
 
             public bool RequiresSave { get; set; }
 
             public User? ThisUser { get; set; }
+			public bool IsExternal { get; internal set; }
 
-            public LoginModel(string login, string password, string domain = "")
+			public LoginModel(string login, string password, string domain = "")
             {
                 Login = login;
                 Password = password;
                 Domain = domain;
-
-                OwaValidation = new Validation();
-                DomainValidation = new Validation();
-                LocalValidation = new Validation();
-                ExchangeValidation = new Validation();
             }
         }
     }

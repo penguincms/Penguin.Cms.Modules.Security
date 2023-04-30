@@ -19,6 +19,7 @@ using Penguin.Web.Security.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Penguin.Cms.Modules.Security.Controllers
 {
@@ -157,7 +158,7 @@ namespace Penguin.Cms.Modules.Security.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(LoginPageModel model) //TODO: Move all of this to a UserService class
+        public async Task<ActionResult> Login(LoginPageModel model) //TODO: Move all of this to a UserService class
         {
             if (model is null)
             {
@@ -182,7 +183,8 @@ namespace Penguin.Cms.Modules.Security.Controllers
             }
 
             StaticLogger.Log($"{model.Login}: Calling user service...", StaticLogger.LoggingLevel.Call);
-            User? user = UserService.Login(model.Login, model.Password);
+            
+            User? user = await UserService.Login(model.Login, model.Password);
 
             if (user != null)
             {
