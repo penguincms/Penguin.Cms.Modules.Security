@@ -95,8 +95,8 @@ namespace Penguin.Cms.Modules.Security.Services
                 loginModel.InDatabase = true;
             }
 
-            bool tryLocal = true;
-            bool tryOthers = false;
+            bool tryLocal = !ConfigurationService.GetBool(ConfigurationNames.DISABLE_LOCAL_LOGIN);
+            bool tryOthers = true;
 
             if (string.Equals(loginModel.Login, Users.Admin.Login, StringComparison.OrdinalIgnoreCase))
             {
