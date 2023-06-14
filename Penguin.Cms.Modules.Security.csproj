@@ -15,7 +15,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\**\*" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.3" />
     <PackageReference Include="Penguin.Authentication.OWA" Version="5.15.0" />
     <PackageReference Include="Penguin.Security" Version="5.15.0" />
     <PackageReference Include="Penguin.Web.Configuration" Version="5.15.0" />
